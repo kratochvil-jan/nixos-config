@@ -7,7 +7,7 @@
 }:
 {
   imports = [
-    # ./nvim.nix
+    ./nvim.nix
     ./zsh.nix
   ];
 

@@ -27,15 +27,14 @@
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
 
     nixvim.url = "github:kratochvil-jan/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
 
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-      # inputs.home-manager.follows = "home-manager";
     };
 
     zjstatus.url = "github:dj95/zjstatus";
+    zjstatus.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -112,7 +111,7 @@
       nixosConfigurations = {
         "big" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs outputs; };
+          specialArgs = { inherit inputs outputs self; };
           modules = [
             # TODO figure out how to do overlays
             (
@@ -131,7 +130,7 @@
 
         "lap" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs outputs; };
+          specialArgs = { inherit inputs outputs self; };
           modules = [
             (
               { ... }:
@@ -149,7 +148,7 @@
 
         "rpi5" = nixos-raspberrypi.lib.nixosSystemFull {
           system = "aarch64-linux";
-          specialArgs = { inherit inputs outputs; };
+          specialArgs = { inherit inputs outputs self; };
           modules = [ ./hosts/rpi5/configuration.nix ];
         };
 
@@ -168,7 +167,7 @@
 
         "rpi3" = nixos-raspberrypi.lib.nixosSystemFull {
           system = "aarch64-linux";
-          specialArgs = { inherit inputs outputs; };
+          specialArgs = { inherit inputs outputs self; };
           modules = [ ./hosts/rpi3/configuration.nix ];
         };
 
