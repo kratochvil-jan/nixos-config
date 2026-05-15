@@ -20,7 +20,7 @@
       ];
       directory = {
         style = "blue";
-        truncation_length = 6;
+        truncation_length = 20;
       };
       character = {
         success_symbol = "[\\$](bold yellow)";
