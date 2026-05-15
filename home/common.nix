@@ -90,6 +90,8 @@
     python3
     htop
     btop
+    just
+    prek
   ];
 
   programs.home-manager.enable = true;
