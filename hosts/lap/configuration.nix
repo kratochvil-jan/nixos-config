@@ -48,10 +48,6 @@
     # "loglevel=7"
   ];
 
-  # Nix
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowUnfreePredicate = (_: true);
-
   nix.settings.trusted-users = [
     "root"
     "jan"
@@ -68,17 +64,20 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # powerManagement.enable = true;
-  # powerManagement.powertop.enable = true;
+  powerManagement.enable = true;
+  powerManagement.powertop.enable = true;
 
-  # services.fstrim.enable = true;
+  services.fstrim.enable = true;
 
   # Security
 
-  # If enabled, pam_wallet will attempt to automatically unlock the user’s default KDE wallet upon login.
-  # If the user has no wallet named “kdewallet”, or the login password does not match their wallet password,
-  # KDE will prompt separately after login.
+  # Automatically unlock the user's default KDE wallet upon login
+  # Note: the login password should match the wallet password
   security.pam.services."jan".kwallet.enable = true;
+
+  security.pki.certificateFiles = [
+    ../../secrets/certs/home-ca.crt
+  ];
 
   # Networking
 
