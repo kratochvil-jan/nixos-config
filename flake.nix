@@ -11,6 +11,7 @@
   };
 
   inputs = {
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -35,6 +36,9 @@
 
     zjstatus.url = "github:dj95/zjstatus";
     zjstatus.inputs.nixpkgs.follows = "nixpkgs";
+
+    # systems.url = "github:nix-systems/default";
+    git-hooks.url = "github:cachix/git-hooks.nix";
   };
 
   outputs =
@@ -48,6 +52,8 @@
       nixvim,
       plasma-manager,
       zjstatus,
+      systems,
+      git-hooks,
       ...
     }@inputs:
     let
@@ -56,7 +62,7 @@
         "aarch64-linux"
         "x86_64-linux"
       ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+      forEachSystem = nixpkgs.lib.genAttrs systems;
 
       inherit (self) outputs;
       formatter = "nixfmt-tree";
@@ -70,34 +76,56 @@
       #     zjstatus = zjstatus.packages.${prev.system}.default;
       #   })
       # ];
+
       # run `nix fmt`
-      formatter = forAllSystems (
+      formatter = forEachSystem (
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          config = self.checks.${system}.pre-commit-check.config;
+          inherit (config) package configFile;
+          script = ''
+            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
+          '';
         in
-        pkgs.${formatter}
+        pkgs.writeShellScriptBin "pre-commit-run" script
       );
 
-      checks = {
-        # for `nix flake check`
-      };
+      # Read-only filesystem and no internet access.
+      checks = forEachSystem (system: {
+        pre-commit-check = inputs.git-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            # keep-sorted start
+            check-executables-have-shebangs.enable = true;
+            end-of-file-fixer.enable = true;
+            keep-sorted.enable = true;
+            nixfmt.enable = true;
+            shellcheck.enable = true;
+            trim-trailing-whitespace.enable = true;
+            # keep-sorted end
+          };
+        };
+      });
 
-      devShells = forAllSystems (
+      devShells = forEachSystem (
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
         in
         {
           default = pkgs.mkShell {
             name = "nixos-config";
+            inherit shellHook; # this installs the hooks automatically on `nix develop`
             nativeBuildInputs = with pkgs; [
-              pkgs.${formatter} # nix formatter
-              shellcheck
-              nix-output-monitor # `nom`
+              # keep-sorted start
+              bash-language-server # ?
+              enabledPackages
               # LSP - do i need this?
               nil # lsp language server for nix
-              bash-language-server # ?
+              nix-output-monitor # `nom`
+              # keep-sorted end
             ];
           };
         }

@@ -1,4 +1,10 @@
-{ self, lib, inputs, pkgs, ... }:
+{
+  self,
+  lib,
+  inputs,
+  pkgs,
+  ...
+}:
 
 {
   # Time & localisation
@@ -17,7 +23,7 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-    # Nixpkgs configuration
+  # Nixpkgs configuration
   nixpkgs = {
     config = {
       allowUnfree = true; # Allow unfree packages system-wide
@@ -30,10 +36,6 @@
     gc.automatic = true; # Enable automatic garbage collection
     gc.dates = "weekly"; # Run garbage collection weekly
     gc.options = "--delete-older-than 30d"; # Delete generations older than 30 days
-
-    # Flake registry configuration
-    # Add all flake inputs to registry / CMD: nix registry list
-    registry = lib.mapAttrs (_: value: { flake = value; }) self.inputs;
 
     # Nix settings
     settings = {

@@ -127,15 +127,15 @@ keybinds clear-defaults=true { // will clear all default keybinds
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
-	bind "Alt m" { 
-		Run "ssh" "-t" "root@10.0.10.13" { 
+	bind "Alt m" {
+		Run "ssh" "-t" "root@10.0.10.13" {
 			direction "Right"
-		} 
+		}
 	}
-	bind "Alt Shift m" { 
-		Run "ssh" "-t" "root@10.0.10.13" { 
-			direction "Down"; 
-		} 
+	bind "Alt Shift m" {
+		Run "ssh" "-t" "root@10.0.10.13" {
+			direction "Down";
+		}
 	}
     }
     shared_except "normal" "locked" {
