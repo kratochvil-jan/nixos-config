@@ -66,19 +66,24 @@
 
       inherit (self) outputs;
 
-      overlays = with inputs; [
-        # ...
+      overlays = [
         (final: prev: {
           zjstatus = zjstatus.packages.${prev.system}.default;
         })
       ];
+
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system overlays;
+        };
     in
     {
       # run `nix fmt`
       formatter = forEachSystem (
         system:
         let
-          pkgs = import nixpkgs { inherit system overlays; };
+          pkgs = mkPkgs system;
           config = self.checks.${system}.pre-commit-check.config;
           inherit (config) package configFile;
           script = ''
@@ -89,26 +94,33 @@
       );
 
       # Read-only filesystem and no internet access.
-      checks = forEachSystem (system: {
-        pre-commit-check = inputs.git-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            # keep-sorted start
-            check-executables-have-shebangs.enable = true;
-            end-of-file-fixer.enable = true;
-            keep-sorted.enable = true;
-            nixfmt.enable = true;
-            shellcheck.enable = true;
-            trim-trailing-whitespace.enable = true;
-            # keep-sorted end
+      checks = forEachSystem (
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        {
+          pre-commit-check = inputs.git-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              # keep-sorted start
+              check-executables-have-shebangs.enable = true;
+              end-of-file-fixer.enable = true;
+              keep-sorted.enable = true;
+              nixfmt.enable = true;
+              shellcheck.enable = true;
+              trim-trailing-whitespace.enable = true;
+              # keep-sorted end
+            };
+            package = pkgs.prek;
           };
-        };
-      });
+        }
+      );
 
       devShells = forEachSystem (
         system:
         let
-          pkgs = import nixpkgs { inherit system overlays; };
+          pkgs = mkPkgs system;
           inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
         in
         {
@@ -135,18 +147,8 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs outputs self; };
           modules = [
-            # TODO figure out how to do overlays
-            (
-              { ... }:
-              {
-                nixpkgs.overlays = [
-                  (final: prev: {
-                    zjstatus = zjstatus.packages.${prev.system}.default;
-                  })
-                ];
-              }
-            )
             ./hosts/big/configuration.nix
+            ./overlays/zjstatus.nix
           ];
         };
 
@@ -154,17 +156,8 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs outputs self; };
           modules = [
-            (
-              { ... }:
-              {
-                nixpkgs.overlays = [
-                  (final: prev: {
-                    zjstatus = zjstatus.packages.${prev.system}.default;
-                  })
-                ];
-              }
-            )
             ./hosts/lap/configuration.nix
+            ./overlays/zjstatus.nix
           ];
         };
 
