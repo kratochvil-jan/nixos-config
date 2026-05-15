@@ -10,4 +10,13 @@
     elisa
     konsole
   ];
+
+  programs.chromium = {
+    enable = true;
+    extensions = [
+      "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
+      "edibdbjcniadpccecjdfdjjppcpchdlm" # I still dont care about cookies
+    ];
+    enablePlasmaBrowserIntegration = true;
+  };
 }

@@ -176,8 +176,6 @@
 
   programs.localsend.enable = true;
 
-  programs.chromium.enablePlasmaBrowserIntegration = true;
-
   programs.ssh.startAgent = true;
 
   programs.dconf.enable = true;

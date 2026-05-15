@@ -32,7 +32,6 @@
                   type = "btrfs";
                   # DANGER
                   extraArgs = [ "-f" ]; # Override existing partition
-
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
