@@ -65,23 +65,20 @@
       forEachSystem = nixpkgs.lib.genAttrs systems;
 
       inherit (self) outputs;
-      formatter = "nixfmt-tree";
 
+      overlays = with inputs; [
+        # ...
+        (final: prev: {
+          zjstatus = zjstatus.packages.${prev.system}.default;
+        })
+      ];
     in
     {
-      # packages = forAllSystems (system: import nixpkgs.legacyPackages.${system});
-      # overlays = with inputs; [
-      #   # ...
-      #   (final: prev: {
-      #     zjstatus = zjstatus.packages.${prev.system}.default;
-      #   })
-      # ];
-
       # run `nix fmt`
       formatter = forEachSystem (
         system:
         let
-          pkgs = import nixpkgs { inherit system; };
+          pkgs = import nixpkgs { inherit system overlays; };
           config = self.checks.${system}.pre-commit-check.config;
           inherit (config) package configFile;
           script = ''
@@ -111,7 +108,7 @@
       devShells = forEachSystem (
         system:
         let
-          pkgs = import nixpkgs { inherit system; };
+          pkgs = import nixpkgs { inherit system overlays; };
           inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
         in
         {
@@ -120,10 +117,7 @@
             inherit shellHook; # this installs the hooks automatically on `nix develop`
             nativeBuildInputs = with pkgs; [
               # keep-sorted start
-              bash-language-server # ?
-              enabledPackages
-              # LSP - do i need this?
-              nil # lsp language server for nix
+              enabledPackages # the enabled hooks from `checks`
               nix-output-monitor # `nom`
               # keep-sorted end
             ];
