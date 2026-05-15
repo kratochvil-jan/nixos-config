@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ self, lib, inputs, pkgs, ... }:
 
 {
   # Time & localisation
@@ -15,6 +15,34 @@
     LC_PAPER = "en_US.UTF-8";
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
+  };
+
+    # Nixpkgs configuration
+  nixpkgs = {
+    config = {
+      allowUnfree = true; # Allow unfree packages system-wide
+      allowUnfreePredicate = (_: true); # Allow all unfree packages
+    };
+  };
+
+  nix = {
+    # Garbage collection settings
+    gc.automatic = true; # Enable automatic garbage collection
+    gc.dates = "weekly"; # Run garbage collection weekly
+    gc.options = "--delete-older-than 30d"; # Delete generations older than 30 days
+
+    # Flake registry configuration
+    # Add all flake inputs to registry / CMD: nix registry list
+    registry = lib.mapAttrs (_: value: { flake = value; }) self.inputs;
+
+    # Nix settings
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      warn-dirty = false; # Don't warn about dirty git repositories
+    };
   };
 
   # Programs
