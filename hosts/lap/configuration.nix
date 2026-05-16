@@ -69,7 +69,8 @@
 
   services.fstrim.enable = true;
 
-  # zramSwap.enable = true;
+  zramSwap.enable = true;
+
   # `btrfs scrub status /`
   # `btrfs scrub start /`
   services.btrfs.autoScrub = {
