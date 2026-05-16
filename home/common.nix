@@ -92,6 +92,7 @@
     btop
     just
     prek
+    killall
   ];
 
   programs.home-manager.enable = true;
