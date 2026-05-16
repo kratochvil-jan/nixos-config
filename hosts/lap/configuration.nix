@@ -118,7 +118,7 @@
 
   virtualisation.docker.enable = true;
   virtualisation.docker.storageDriver = "btrfs";
-  virtualisation.docker.daemon.settings.experimental = "true";
+  virtualisation.docker.daemon.settings.experimental = true;
 
   # Virtualisation
 
