@@ -69,6 +69,15 @@
 
   services.fstrim.enable = true;
 
+  zramSwap.enable = true;
+  # `btrfs scrub status /`
+  # `btrfs scrub start /`
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "monthly";
+    fileSystems = [ "/" ];
+  };
+
   # Security
 
   # Automatically unlock the user's default KDE wallet upon login
@@ -106,9 +115,9 @@
 
   # Containers
 
-  # virtualisation.docker.enable = true;
-  # virtualisation.docker.storageDriver = "btrfs";
-  # virtualisation.docker.daemon.settings.experimental = "true";
+  virtualisation.docker.enable = true;
+  virtualisation.docker.storageDriver = "btrfs";
+  virtualisation.docker.daemon.settings.experimental = "true";
 
   # Virtualisation
 

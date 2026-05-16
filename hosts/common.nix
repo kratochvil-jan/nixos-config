@@ -69,6 +69,7 @@
       # here, NOT in environment.systemPackages
     ];
   };
+
   # for compatibility
   services.envfs.enable = true;
 }
