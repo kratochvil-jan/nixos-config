@@ -40,13 +40,34 @@
   hardware.amdgpu.opencl.enable = true;
   hardware.amdgpu.zluda.enable = true;
 
-  boot.kernelParams = [
-    "amdgpu"
-    # "nomodeset"
-    # "systemd.unit=multi-user.target"
-    # "systemd.debug-shell=1"
-    # "loglevel=7"
-  ];
+  boot = {
+    plymouth = {
+      enable = true;
+      theme = "deus_ex";
+      themePackages = with pkgs; [
+        # By default we would install all themes
+        (adi1090x-plymouth-themes.override {
+          selected_themes = [ "deus_ex" ];
+        })
+      ];
+    };
+
+    # Enable "Silent boot"
+    consoleLogLevel = 3;
+    initrd.verbose = false;
+    kernelParams = [
+      "amdgpu"
+      "video=1920x1200"
+      "quiet"
+      "udev.log_level=3"
+      "systemd.show_status=auto"
+    ];
+    # Hide the OS choice for bootloaders.
+    # It's still possible to open the bootloader list by pressing any key
+    # It will just not appear on screen unless a key is pressed
+    loader.timeout = 0;
+
+  };
 
   nix.settings.trusted-users = [
     "root"
@@ -62,6 +83,7 @@
   # Bootloader
 
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.consoleMode = "2";
   boot.loader.efi.canTouchEfiVariables = true;
 
   powerManagement.enable = true;
