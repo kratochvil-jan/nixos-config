@@ -60,6 +60,7 @@
     tcpdump
     tshark
     wl-clipboard
+    sshfs
   ];
 
   programs.nix-ld = {
