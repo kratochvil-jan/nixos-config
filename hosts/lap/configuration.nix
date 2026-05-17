@@ -189,11 +189,11 @@
   services.touchegg.enable = true;
   services.libinput.enable = true;
 
-  # services.printing = {
-  #   # CUPS
-  #   enable = true;
-  #   drivers = [ pkgs.hplipWithPlugin ];
-  # };
+  services.printing = {
+    # CUPS
+    enable = true;
+    drivers = [ pkgs.hplipWithPlugin ];
+  };
 
   # Programs
 
