@@ -5,6 +5,7 @@
     signal-desktop
     blobdrop
     doublecmd
+    libreoffice
   ];
 
   services.kdeconnect.enable = true;
