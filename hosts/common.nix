@@ -32,11 +32,7 @@
   };
 
   nix = {
-    # Garbage collection settings
-    gc.automatic = true; # Enable automatic garbage collection
-    gc.dates = "weekly"; # Run garbage collection weekly
-    gc.options = "--delete-older-than 30d"; # Delete generations older than 30 days
-
+    # Garbage collection was moved to the `nh` wrapper
     # Nix settings
     settings = {
       experimental-features = [
@@ -45,6 +41,16 @@
       ];
       warn-dirty = false; # Don't warn about dirty git repositories
     };
+  };
+
+  # Nix command wrapper
+
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.dates = "weekly";
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    # flake = ...; # ?
   };
 
   # Programs
