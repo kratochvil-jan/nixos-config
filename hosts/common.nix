@@ -67,6 +67,7 @@
     tshark
     wl-clipboard
     sshfs
+    inetutils # telnet
   ];
 
   programs.nix-ld = {
