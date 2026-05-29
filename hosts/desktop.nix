@@ -16,6 +16,7 @@
     extensions = [
       "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
       "edibdbjcniadpccecjdfdjjppcpchdlm" # I still dont care about cookies
+      "edllcgchknhokighleffpipdedmpgiln" # Google Search Maps Button
     ];
     enablePlasmaBrowserIntegration = true;
   };
