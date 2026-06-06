@@ -102,16 +102,29 @@
         {
           pre-commit-check = inputs.git-hooks.lib.${system}.run {
             src = ./.;
-            hooks = {
-              # keep-sorted start
-              check-executables-have-shebangs.enable = true;
-              end-of-file-fixer.enable = true;
-              keep-sorted.enable = true;
-              nixfmt.enable = true;
-              shellcheck.enable = true;
-              trim-trailing-whitespace.enable = true;
-              # keep-sorted end
-            };
+            hooks =
+              let
+                flake-check = {
+                  enable = true;
+                  name = "nix flake check";
+                  entry = "nix flake check --no-build";
+                  language = "system";
+                  pass_filenames = false;
+                  files = "(^.*\\.nix$)|(^flake\\.lock$)|";
+                  stages = [ "pre-push" ];
+                };
+              in
+              {
+                # keep-sorted start
+                check-executables-have-shebangs.enable = true;
+                end-of-file-fixer.enable = true;
+                flake-check = flake-check;
+                keep-sorted.enable = true;
+                nixfmt.enable = true;
+                shellcheck.enable = true;
+                trim-trailing-whitespace.enable = true;
+                # keep-sorted end
+              };
             package = pkgs.prek;
           };
         }
