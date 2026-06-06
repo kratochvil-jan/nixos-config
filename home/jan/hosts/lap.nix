@@ -26,6 +26,7 @@
       freecad
       prusa-slicer
       bitwarden-desktop
+      signal-desktop
     ];
 
     home.stateVersion = "25.11";
