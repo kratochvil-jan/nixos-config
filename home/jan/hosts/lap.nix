@@ -16,6 +16,11 @@
       ../../zellij.nix
     ];
 
+    services.easyeffects.enable = true;
+    services.easyeffects.extraPresets = {
+      "lenovo ideapad slim 5 speakers" = builtins.fromJSON (builtins.readFile ./easyeffects-preset.json);
+    };
+
     home.packages = with pkgs; [
       tio
       freecad
