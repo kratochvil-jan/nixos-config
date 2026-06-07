@@ -124,30 +124,6 @@
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
 
-  # Temporary local nameserver to resolve kratochvil-jan.eu to private IP
-  # until i fix the DNS on the router
-  networking.nameservers = [ "127.0.0.1" ];
-  services.unbound = {
-    enable = true;
-
-    settings = {
-      server = {
-        interface = [ "127.0.0.1" ];
-        access-control = [ "127.0.0.0/8 allow" ];
-
-        # wildcard zone
-        local-zone = [
-          ''"kratochvil-jan.eu." redirect''
-        ];
-
-        # wildcard answer (this is the key part)
-        local-data = [
-          ''"kratochvil-jan.eu. A 10.0.10.13"''
-        ];
-      };
-    };
-  };
-
   # Wireguard configuration as a NetworkManager profile
   # This way i can toggle on/off the connection
   # via the standard network management applets
@@ -168,9 +144,6 @@
       };
       ipv4 = {
         address1 = "192.168.216.4/32";
-        # TODO uncomment this when i fix dns on router via wireguard
-        # dns = "10.0.10.254";
-        # dns-search = "~kratochvil-jan.eu";
         method = "manual";
       };
       ipv6 = {
