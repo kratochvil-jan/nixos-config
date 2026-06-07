@@ -64,7 +64,7 @@ in
 
   disko.devices.disk.main = {
     type = "disk";
-    device = "/dev/mmcblk0";
+    device = "/dev/disk/by-id/usb-USB_SanDisk_3.2Gen1_0101ea9a2b19130c1830dce6d4787ad93af78ad0287de6c87587a406a11a48c8b862000000000000000000001dfd3b270097760091558107afaef4a1-0:0";
 
     content = {
       type = "gpt";

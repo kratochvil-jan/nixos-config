@@ -28,6 +28,13 @@
     ../home-manager.nix
   ];
 
+  # boot.kernelParams = [
+  #   "console=ttyAMA1,115200"
+  #   "console=tty1"
+  # ];
+  #
+  # systemd.services."serial-getty@ttyAMA1".enable = true;
+
   # Nix
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnfreePredicate = (_: true);
@@ -39,7 +46,7 @@
 
   # Bootloader
 
-  boot.loader.raspberry-pi.bootloader = "kernel";
+  boot.loader.raspberry-pi.bootloader = "uboot";
   boot.loader.systemd-boot.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
 

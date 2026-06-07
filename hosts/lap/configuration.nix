@@ -35,6 +35,8 @@
 
     # Home Manager
     ../home-manager.nix
+
+    ../../modules/home-cloud.nix
   ];
 
   hardware.amdgpu.initrd.enable = true;

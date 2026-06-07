@@ -7,10 +7,6 @@
 }:
 {
   imports = [
-    # Hardware
-    inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
-    inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
-
     # Disk
     inputs.disko.nixosModules.disko
     ./disk-config.nix
