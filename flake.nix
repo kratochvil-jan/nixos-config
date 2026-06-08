@@ -31,16 +31,14 @@
 
     nixvim.url = "github:kratochvil-jan/nixvim";
 
-    plasma-manager = {
-      url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    plasma-manager.url = "github:nix-community/plasma-manager";
+    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     zjstatus.url = "github:dj95/zjstatus";
     zjstatus.inputs.nixpkgs.follows = "nixpkgs";
 
-    # systems.url = "github:nix-systems/default";
     git-hooks.url = "github:cachix/git-hooks.nix";
+
   };
 
   outputs =
@@ -329,146 +327,19 @@
           ];
         };
 
-        "rpi3-stock" = nixpkgs.lib.nixosSystem {
+        "rpi3" = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
+          specialArgs = { inherit inputs outputs self; };
           modules = [
-            (
-              {
-                config,
-                pkgs,
-                modulesPath,
-                lib,
-                ...
-              }:
-              {
-                imports = [
-                  (modulesPath + "/profiles/minimal.nix")
-                  # (modulesPath + "/profiles/perlless.nix")
-                  "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
-                ];
-                boot.supportedFilesystems.zfs = lib.mkForce false;
-                sdImage.compressImage = false;
-                system.stateVersion = "26.05";
-                nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+            ./hosts/rpi3/systems/default.nix
+          ];
+        };
 
-                services.openssh.enable = true;
-                users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-                users.users.root.initialPassword = "changeme";
-
-                # tags are used to assemble system.nixos.label
-                # which is displayed in generation name via `nixos-rebuild list-generations`
-                # note: the tags are sorted in the label, changing order does not matter
-                system.nixos.tags = [
-                  "rpi3"
-                  config.boot.kernelPackages.kernel.version
-                ];
-
-                nix.settings.experimental-features = [
-                  "nix-command"
-                  "flakes"
-                ];
-
-                boot.kernelParams = [
-                  "console=ttyS0,115200"
-                ];
-                boot.blacklistedKernelModules = [
-                  "onboard_usb_dev" # previously called "onboard_usb_hub"
-                ];
-                boot.loader.generic-extlinux-compatible.enable = true;
-                boot.extraModprobeConfig = ''
-                  options brcmfmac power_save=0
-                '';
-                networking.networkmanager.enable = false;
-                networking.useNetworkd = true;
-                systemd.network = {
-                  enable = true;
-                  networks."enu1u1u1" = {
-                    matchConfig.Name = "enu1u1u1";
-                    networkConfig.DHCP = "yes";
-                    dhcpV4Config.RouteMetric = 100;
-                  };
-
-                  networks."20-wifi" = {
-                    matchConfig.Name = "wlan0";
-                    networkConfig.DHCP = "yes";
-                    dhcpV4Config.RouteMetric = 200;
-                  };
-                };
-                systemd.network.wait-online.anyInterface = true;
-                networking.wireless.userControlled = true;
-
-                hardware.firmware = [ pkgs.raspberrypiWirelessFirmware ];
-
-                networking.wireless.enable = true;
-                # TODO hide me
-                networking.wireless.extraConfig = ''
-                  country=CZ
-                  network={
-                          ssid="mt"
-                          bssid=d4:01:c3:4e:2f:d2
-                          psk="dummy-password"
-                          key_mgmt=WPA-PSK WPA-EAP FT-PSK FT-EAP
-                          mesh_fwding=1
-                  }
-                '';
-
-                services.resolved.enable = true;
-                networking.hostName = "rpi3-stock";
-                networking.firewall.enable = true;
-                networking.firewall = {
-                  allowedTCPPorts = [
-                    80
-                    443
-                    8123
-                  ];
-                };
-                networking.nftables.enable = true;
-
-                time.timeZone = "Europe/Prague";
-
-                services.home-assistant.enable = true;
-
-                environment.systemPackages = with pkgs; [
-                  vim
-                  wget
-                  htop
-                  ncdu
-                  ripgrep
-                  dtc
-                ];
-                hardware.deviceTree.enable = true;
-                hardware.deviceTree.overlays = [
-                  {
-                    name = "disable-bt-and-enable-serial";
-
-                    dtsText = ''
-                      /dts-v1/;
-                      /plugin/;
-
-                      / {
-                        compatible = "brcm,bcm2837";
-
-                        fragment@0 {
-                          target-path = "/soc";
-                          __overlay__ {
-                              serial@7e201000 {
-                                pinctrl-0 = <&uart0_gpio14>;
-                                bluetooth {
-                                  status = "disabled";
-                                };
-                              };
-
-                              serial@7e215040 {
-                                status = "disabled";
-                              };
-                          };
-                        };
-                      };
-                    '';
-                  }
-                ];
-              }
-            )
+        "rpi3-live" = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = { inherit inputs outputs self; };
+          modules = [
+            ./hosts/rpi3/systems/live.nix
           ];
         };
 

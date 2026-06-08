@@ -68,6 +68,7 @@
     wl-clipboard
     sshfs
     inetutils # telnet
+    inputs.agenix.packages.${system}.default
   ];
 
   programs.nix-ld = {
