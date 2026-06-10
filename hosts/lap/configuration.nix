@@ -49,6 +49,11 @@
   hardware.amdgpu.opencl.enable = true;
   hardware.amdgpu.zluda.enable = true;
 
+  nix.distributedBuilds = true;
+  nix.buildMachines = [
+    (import ../rpi3/build-machine.nix)
+  ];
+
   boot = {
     plymouth = {
       enable = true;
