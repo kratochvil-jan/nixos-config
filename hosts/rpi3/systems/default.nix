@@ -9,7 +9,12 @@
 {
 
   age.secrets.pi.file = ../../../secrets/users/rpi3/pi.age;
-  age.secrets.wifi.file = ../../../secrets/wifi.env.age;
+  age.secrets.wifi = {
+    file = ../../../secrets/wifi.env.age;
+    mode = "700";
+    owner = config.systemd.services.wpa_supplicant.serviceConfig.User;
+    group = config.systemd.services.wpa_supplicant.serviceConfig.Group;
+  };
 
   imports = [
     inputs.agenix.nixosModules.default
@@ -38,11 +43,41 @@
   networking.firewall.enable = true;
   networking.nftables.enable = true;
   networking.networkmanager.enable = false;
-  networking.wireless.enable = true;
-  networking.wireless.userControlled = true;
+  # disable wireless power saving
   boot.extraModprobeConfig = ''
     options brcmfmac power_save=0
   '';
+  networking.wireless = {
+    enable = true;
+    userControlled = true;
+    scanOnLowSignal = false;
+  };
+
+  systemd.services.wpa_supplicant.preStart = lib.mkForce ''
+    install -d -m 700 /run/wpa_supplicant
+
+    ssid=$(cat ${config.age.secrets.wifi.path} | grep WIFI_SSID |  cut -d= -f2)
+    bssid=$(cat ${config.age.secrets.wifi.path} | grep WIFI_BSSID |  cut -d= -f2)
+    psk=$(cat ${config.age.secrets.wifi.path} | grep WIFI_PSK |  cut -d= -f2)
+
+    cat > /run/wpa_supplicant/wlan0.conf <<EOF
+    ctrl_interface=/run/wpa_supplicant/control
+    ctrl_interface_group=wpa_supplicant
+    network={
+      ssid="$ssid"
+      bssid=$bssid
+      psk="$psk"
+    }
+    EOF
+  '';
+
+  systemd.services.wpa_supplicant.serviceConfig = {
+    ExecStart = lib.mkForce "${pkgs.wpa_supplicant}/bin/wpa_supplicant -i wlan0 -c /run/wpa_supplicant/wlan0.conf";
+    UMask = lib.mkForce "066";
+    RuntimeDirectory = "wpa_supplicant";
+    RuntimeDirectoryMode = "700";
+  };
+
   networking.useNetworkd = true;
   systemd.network = {
     enable = true;
@@ -60,17 +95,17 @@
     wait-online.anyInterface = true;
   };
 
-  systemd.services.wpa_supplicant.serviceConfig.EnvironmentFile = config.age.secrets.wifi.path;
-  networking.wireless.extraConfig = ''
-    country=CZ
-    network={
-            ssid="$WIFI_SSID"
-            bssid=$WIFI_BSSID
-            psk="$WIFI_PSK"
-            key_mgmt=WPA-PSK WPA-EAP FT-PSK FT-EAP
-            mesh_fwding=1
-    }
-  '';
+  # systemd.services.wpa_supplicant.serviceConfig.EnvironmentFile = config.age.secrets.wifi.path;
+  # networking.wireless.extraConfig = ''
+  #   country=CZ
+  #   network={
+  #           ssid="$WIFI_SSID"
+  #           bssid=$WIFI_BSSID
+  #           psk="$WIFI_PSK"
+  #           key_mgmt=WPA-PSK WPA-EAP FT-PSK FT-EAP
+  #           mesh_fwding=1
+  #   }
+  # '';
 
   environment.systemPackages = with pkgs; [
     vim
