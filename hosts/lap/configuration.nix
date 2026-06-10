@@ -213,6 +213,10 @@
     };
   };
 
+  # SSH
+
+  services.openssh.enable = true;
+
   # Services
 
   systemd.oomd.enable = true;
@@ -245,7 +249,8 @@
 
   programs.localsend.enable = true;
 
-  programs.ssh.startAgent = true;
+  # TODO
+  # programs.ssh.startAgent = true;
 
   programs.dconf.enable = true;
 
