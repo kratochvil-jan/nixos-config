@@ -71,11 +71,22 @@
     EOF
   '';
 
-  systemd.services.wpa_supplicant.serviceConfig = {
-    ExecStart = lib.mkForce "${pkgs.wpa_supplicant}/bin/wpa_supplicant -i wlan0 -c /run/wpa_supplicant/wlan0.conf";
-    UMask = lib.mkForce "066";
-    RuntimeDirectory = "wpa_supplicant";
-    RuntimeDirectoryMode = "700";
+  systemd.services.wpa_supplicant = {
+    serviceConfig = {
+      ExecStart = lib.mkForce "${pkgs.wpa_supplicant}/bin/wpa_supplicant -i wlan0 -c /run/wpa_supplicant/wlan0.conf";
+      UMask = lib.mkForce "066";
+      RuntimeDirectory = "wpa_supplicant";
+      RuntimeDirectoryMode = "700";
+    };
+    unitConfig =
+      let
+        device = "sys-subsystem-net-devices-wlan0.device";
+      in
+      {
+        After = [ device ];
+        Wants = [ device ];
+        BindsTo = [ device ];
+      };
   };
 
   networking.useNetworkd = true;
