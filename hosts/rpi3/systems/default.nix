@@ -37,6 +37,12 @@
   ];
   users.users.root.initialPassword = "changeme";
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 10d";
+  };
+
   networking.hostName = "rpi3";
   services.openssh.enable = true;
   services.resolved.enable = true;
