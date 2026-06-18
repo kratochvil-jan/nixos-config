@@ -39,6 +39,12 @@
     ../../modules/home-cloud.nix
   ];
 
+  age.secrets.lap-jan-pw.file = ../../secrets/hosts/lap/jan.pw.age;
+  age.secrets.lap-wg.file = ../../secrets/hosts/lap/wg.key.age;
+
+  users.mutableUsers = false;
+  users.users."jan".hashedPasswordFile = config.age.secrets.lap-jan-pw.path;
+
   hardware.amdgpu.initrd.enable = true;
   hardware.amdgpu.opencl.enable = true;
   hardware.amdgpu.zluda.enable = true;
@@ -155,7 +161,7 @@
       proxy = { };
       wireguard = {
         listen-port = "51820";
-        private-key = builtins.readFile "${inputs.self.outPath}/secrets/wg/laptop.key";
+        private-key = config.age.secrets.lap-wg.path;
       };
       "wireguard-peer.+uVH6IVVxe1gAGo2JbpGYwU7mOE1FXW+dEMTEqL1AiY=" = {
         allowed-ips = "10.0.10.0/24;";

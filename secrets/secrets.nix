@@ -28,4 +28,9 @@ in
     systems.lap.users.jan
     systems.rpi3
   ];
+
+  "hosts/lap/wg.key.age".publicKeys = [
+    systems.lap.users.jan
+    systems.lap.system
+  ];
 }
