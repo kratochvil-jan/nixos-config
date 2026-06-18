@@ -59,6 +59,10 @@
   programs.neovim.enable = true;
   programs.neovim.defaultEditor = true;
 
+  # for zsh completions
+  environment.pathsToLink = [ "/share/zsh" ];
+  environment.shells = with pkgs; [ zsh ];
+
   environment.systemPackages = with pkgs; [
     wget
     curl
