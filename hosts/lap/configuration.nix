@@ -83,12 +83,6 @@
 
   };
 
-  nix.settings.trusted-users = [
-    "root"
-    "jan"
-    "wheel"
-  ];
-
   # Firmware
 
   hardware.enableRedistributableFirmware = true;
