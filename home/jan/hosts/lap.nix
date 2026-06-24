@@ -25,7 +25,7 @@
       tio
       freecad
       prusa-slicer
-      bitwarden-desktop
+      # bitwarden-desktop
       signal-desktop
     ];
 
