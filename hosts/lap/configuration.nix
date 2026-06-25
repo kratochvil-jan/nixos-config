@@ -253,6 +253,7 @@
   programs.steam.enable = true;
 
   programs.localsend.enable = true;
+  programs.kdeconnect.enable = true;
 
   # TODO
   # programs.ssh.startAgent = true;
