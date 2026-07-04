@@ -7,7 +7,6 @@
 }:
 
 let
-  systems = (import ../../secrets/systems/default.nix).systems;
 in
 {
   imports = [
@@ -44,7 +43,7 @@ in
     ../rpi3/cloud.nix
   ];
 
-  age.secrets.lap-jan-pw.file = systems.lap.users.jan.pw;
+  age.secrets.lap-jan-pw.file = ../../secrets/hosts/lap/jan.pw.age;
   age.secrets.lap-wg.file = ../../secrets/hosts/lap/wg.key.env.age;
 
   users.mutableUsers = false;

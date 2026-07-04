@@ -6,11 +6,6 @@ let
       users.jan = builtins.readFile ./hosts/lap/users/jan.pub;
     };
     rpi3.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoJkx6klrM5N3aJ3Mb7fdtjqb2BsMuN0P4xrgqpxeVm";
-    # old on USB
-    # rpi3 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIyq06BSCEYCEPYw5lE1WMdiTHeLvYQKfzyxbA48Lc0P";
-
-    # TODO
-    # "nixos-big" =
   };
 in
 {
@@ -21,11 +16,12 @@ in
 
   "users/rpi3/pi.age".publicKeys = [
     systems.lap.users.jan
-    systems.rpi3
+    systems.rpi3.system
   ];
 
   "cloudflare.env.age".publicKeys = [
     systems.lap.users.jan
+    systems.lap.system
     systems.rpi3.system
   ];
 
