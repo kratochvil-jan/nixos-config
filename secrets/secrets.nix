@@ -34,7 +34,7 @@ in
     systems.lap.system
   ];
 
-  "hosts/lap/wg.key.age".publicKeys = [
+  "hosts/lap/wg.key.env.age".publicKeys = [
     systems.lap.users.jan
     systems.lap.system
   ];

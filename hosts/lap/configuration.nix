@@ -45,7 +45,7 @@ in
   ];
 
   age.secrets.lap-jan-pw.file = systems.lap.users.jan.pw;
-  age.secrets.lap-wg.file = ../../secrets/hosts/lap/wg.key.age;
+  age.secrets.lap-wg.file = ../../secrets/hosts/lap/wg.key.env.age;
 
   users.mutableUsers = false;
   users.users."jan".initialPassword = lib.mkForce null;
@@ -141,7 +141,7 @@ in
   # Wireguard configuration as a NetworkManager profile
   # This way i can toggle on/off the connection
   # via the standard network management applets
-  networking.networkmanager.ensureProfiles.profiles = {
+  networking.networkmanager.ensureProfiles = {
     # Best way to configure this:
     # 1. Create a wg.conf and test it via `wg-quick up ./wg.conf`
     # 2. Once that works, import the conf into NetworkManager,
@@ -149,7 +149,8 @@ in
     # 3. If that works, convert this imperative config
     #    into declarative for NetworkManager:
     #    `sudo su -c "cd /etc/NetworkManager/system-connections && nix --extra-experimental-features 'nix-command flakes' run github:Janik-Haag/nm2nix | nix --extra-experimental-features 'nix-command flakes' run nixpkgs#nixfmt-rfc-style"`
-    wg = {
+    environmentFiles = [ config.age.secrets.lap-wg.path ];
+    profiles.wg-67cb5bbc-e7e3-4aa4-b719-3a43b510e1f8 = {
       connection = {
         id = "wg";
         interface-name = "wg";
@@ -161,13 +162,13 @@ in
         method = "manual";
       };
       ipv6 = {
-        addr-gen-mode = "default";
+        addr-gen-mode = "stable-privacy";
         method = "disabled";
       };
       proxy = { };
       wireguard = {
         listen-port = "51820";
-        private-key = config.age.secrets.lap-wg.path;
+        private-key = "$WG_KEY_HOME"; # from env file
       };
       "wireguard-peer.+uVH6IVVxe1gAGo2JbpGYwU7mOE1FXW+dEMTEqL1AiY=" = {
         allowed-ips = "10.0.10.0/24;";
