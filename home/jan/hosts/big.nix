@@ -12,7 +12,7 @@
       ../../alacritty.nix
       ../../common.nix
       ../../desktop.nix
-      ../../plasma.nix
+      # ../../plasma.nix
       ../../zellij.nix
     ];
     home.stateVersion = "25.11";

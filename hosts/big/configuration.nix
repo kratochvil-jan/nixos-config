@@ -26,18 +26,24 @@ in
 
     # System
     ../common.nix
-    # ../desktop.nix
+    ../desktop.nix
 
     # Users
     ../users/root.nix
     ../users/jan.nix
+    ../../home/jan/hosts/big.nix
 
     # Home Manager
     ../home-manager.nix
-    ../../home/jan/hosts/big.nix
   ];
 
+  age.secrets.big-jan-pw.file = ../../secrets/hosts/big/jan.pw.age;
+
   nixpkgs.config.allowUnfree = true;
+
+  users.mutableUsers = false;
+  users.users."jan".initialPassword = lib.mkForce null;
+  users.users."jan".hashedPasswordFile = config.age.secrets.big-jan-pw.path;
 
   # Kernel
 

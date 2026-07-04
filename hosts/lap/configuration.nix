@@ -5,6 +5,10 @@
   pkgs,
   ...
 }:
+
+let
+  systems = (import ../../secrets/systems/default.nix).systems;
+in
 {
   imports = [
     # Hardware
@@ -36,13 +40,15 @@
     # Home Manager
     ../home-manager.nix
 
-    ../../modules/home-cloud.nix
+    # ../../modules/home-cloud.nix
+    ../rpi3/cloud.nix
   ];
 
-  age.secrets.lap-jan-pw.file = ../../secrets/hosts/lap/jan.pw.age;
+  age.secrets.lap-jan-pw.file = systems.lap.users.jan.pw;
   age.secrets.lap-wg.file = ../../secrets/hosts/lap/wg.key.age;
 
   users.mutableUsers = false;
+  users.users."jan".initialPassword = lib.mkForce null;
   users.users."jan".hashedPasswordFile = config.age.secrets.lap-jan-pw.path;
 
   hardware.amdgpu.initrd.enable = true;
@@ -115,6 +121,7 @@
   # Note: the login password should match the wallet password
   security.pam.services."jan".kwallet.enable = true;
 
+  # TODO to be removed soon
   security.pki.certificateFiles = [
     ../../secrets/certs/home-ca.crt
   ];
