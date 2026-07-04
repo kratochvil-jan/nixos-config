@@ -177,6 +177,8 @@ in
     };
   };
 
+  services.avahi.enable = true;
+
   # Perihperals
   hardware.spacenavd.enable = true;
 
