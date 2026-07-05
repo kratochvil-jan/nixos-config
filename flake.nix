@@ -307,6 +307,8 @@
               boot.tmp.useTmpfs = true;
               users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
 
+              sdImage.compressImage = false;
+
               hardware.raspberry-pi.config.all = {
                 dt-overlays = {
                   pcie-32bit-dma-pi5.enable = true;
