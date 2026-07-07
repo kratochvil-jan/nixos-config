@@ -189,7 +189,7 @@
             inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
             inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
             disko.nixosModules.disko
-            ./pcie-sd-ext4.nix
+            ./pcie-sd-btrfs.nix
             (
               { pkgs, ... }:
               {
@@ -304,7 +304,7 @@
             raspberry-pi-5.page-size-16k
             {
               boot.loader.raspberry-pi.bootloader = "kernel";
-              boot.tmp.useTmpfs = true;
+              # boot.tmp.useTmpfs = true;
               users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
 
               sdImage.compressImage = false;

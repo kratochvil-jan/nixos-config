@@ -70,7 +70,7 @@ in
         };
       };
       main = {
-        device = "/dev/disk/by-id/ata-TOSHIBA_MQ01ABF050_X3QEW0PZT";
+        device = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_1TB_S3PLNF0JA12377F";
         type = "disk";
         content = {
           type = "gpt";
