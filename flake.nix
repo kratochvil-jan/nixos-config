@@ -190,17 +190,19 @@
             inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
             disko.nixosModules.disko
             ./pcie-sd-btrfs.nix
+            ./modules/base.nix
             (
               { pkgs, ... }:
               {
+                virtualisation.docker.enable = true;
+                virtualisation.docker.storageDriver = "btrfs";
+                virtualisation.docker.daemon.settings.experimental = true;
+
                 hardware.bluetooth.enable = false;
                 environment.systemPackages = [
                   pkgs.dracut # for lsinitrd
                 ];
-                nix.settings.experimental-features = [
-                  "nix-command"
-                  "flakes"
-                ];
+
                 # TODO i want uboot
                 # testing uboot
                 # boot.loader.raspberry-pi.bootloader = "uboot";
