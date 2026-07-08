@@ -55,6 +55,14 @@ let
       user = getUser "forgejo";
       group = getGroup "forgejo";
     };
+    vaultwarden = {
+      port = 8005;
+      storage = "/services/vaultwarden";
+      icon = "vaultwarden.svg";
+      prefix = "vaultwarden";
+      user = getUser "vaultwarden";
+      group = getGroup "vaultwarden";
+    };
   };
 
   # Convert the services config above into configuration for homepage-dashboard
@@ -289,6 +297,18 @@ in
       }
       // traefikServices.generatedServices;
     };
+  };
+
+  systemd.services.vaultwarden = {
+    environment.ROCKET_PORT = (toString services.vaultwarden.port);
+    serviceConfig.StateDirectory = lib.mkForce "";
+    serviceConfig.PrivateUsers = lib.mkForce false;
+    serviceConfig.ReadWritePaths = [ services.vaultwarden.storage ];
+  };
+  services.vaultwarden = {
+    enable = true;
+    domain = "${domain}";
+    config.DATA_FOLDER = services.vaultwarden.storage;
   };
 
   networking.firewall = {
