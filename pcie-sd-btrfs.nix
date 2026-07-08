@@ -88,31 +88,47 @@ in
                   };
                   "/nix" = {
                     mountpoint = "/nix";
-                    mountOptions = [ "noatime" ];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                   "/home" = {
                     mountpoint = "/home";
-                    mountOptions = [ "noatime" ];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                   "/log" = {
                     mountpoint = "/var/log";
-                    mountOptions = [ "noatime" ];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
-                  "/swap" = {
-                    mountpoint = "/.swapvol";
-                    swap."swapfile" = {
-                      size = "8G";
-                      priority = 3; # (higher number -> higher priority)
-                      # to be used after zswap (set zramSwap.priority > this priority),
-                      # but before "hibernation" swap
-                      # https://github.com/nix-community/disko/issues/651
-                    };
+                  "/services" = {
+                    mountpoint = "/services";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
+                  # "/swap" = {
+                  #   mountpoint = "/.swapvol";
+                  #   swap."swapfile" = {
+                  #     size = "8G";
+                  #     priority = 3; # (higher number -> higher priority)
+                  #     # to be used after zswap (set zramSwap.priority > this priority),
+                  #     # but before "hibernation" swap
+                  #     # https://github.com/nix-community/disko/issues/651
+                  #   };
+                  # };
                 };
               };
             };
           };
-        };
+        }; # main
       };
     };
   };

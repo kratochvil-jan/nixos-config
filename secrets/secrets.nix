@@ -6,6 +6,7 @@ let
       users.jan = builtins.readFile ./hosts/lap/users/jan.pub;
     };
     rpi3.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoJkx6klrM5N3aJ3Mb7fdtjqb2BsMuN0P4xrgqpxeVm";
+    rpi5.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHmzDV4TUM+HPHCicxrpQU8BkLkUweqjGbDa2qNssSq";
   };
 in
 {
@@ -23,6 +24,7 @@ in
     systems.lap.users.jan
     systems.lap.system
     systems.rpi3.system
+    systems.rpi5.system
   ];
 
   "hosts/lap/jan.pw.age".publicKeys = [

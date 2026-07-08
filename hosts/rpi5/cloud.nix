@@ -7,6 +7,9 @@
 }:
 
 let
+  getUser = name: config.systemd.services.${name}.serviceConfig.User or "root";
+  getGroup = name: config.systemd.services.${name}.serviceConfig.Group or "root";
+
   domain = "kratochvil-jan.eu";
 
   services = {
@@ -14,31 +17,43 @@ let
       storage = "/services/traefik";
       icon = "traefik.svg";
       prefix = "traefik";
-      hide-traefik = true;
+      hideTraefik = true;
+      user = getUser "traefik";
+      group = getGroup "traefik";
     };
     hass = {
       port = 8001;
-      storage = "/services/hass";
+      storage = "/services/home-assistant";
       icon = "home-assistant.svg";
       prefix = "hass";
+      user = "root";
+      group = "root";
     };
     silverbullet = {
       port = 8002;
       storage = "/services/silverbullet";
       icon = "silverbullet.svg";
       prefix = "silverbullet";
+      user = getUser "silverbullet";
+      group = getGroup "silverbullet";
     };
     homepage = {
       port = 8003;
-      storage = "/services/homepage";
+      # no dynamic storage - only static configs from nix
+      # storage = "/services/homepage";
       prefix = "";
-      hide-homepage = true;
+      hideHomepage = true;
+      hideTraefik = true;
+      user = "homepage"; # getUser "homepage-dashboard";
+      group = getGroup "homepage-dashboard";
     };
     forgejo = {
       port = 8004;
       storage = "/services/forgejo";
       icon = "forgejo.svg";
       prefix = "git";
+      user = getUser "forgejo";
+      group = getGroup "forgejo";
     };
   };
 
@@ -49,7 +64,7 @@ let
         href = "http://${cfg.prefix}.${domain}";
         icon = cfg.icon;
       };
-    }) (builtins.filterAttrs (_: cfg: !(cfg."hide-homepage" or false)) services)
+    }) (lib.filterAttrs (n: v: !(v.hideHomepage or false)) services)
   );
 
   # Generate traefik routes
@@ -73,7 +88,7 @@ let
 
   traefikServices = {
     # filter away items not to auto-populate
-    services = builtins.filterAttrs (_: svc: !(svc."hide-traefik" or false)) services;
+    services = lib.filterAttrs (_: svc: !(svc.hideTraefik or false)) services;
 
     generatedRouters = builtins.foldl' (a: b: a // b) { } (
       builtins.attrValues (builtins.mapAttrs mkRouter traefikServices.services)
@@ -83,9 +98,26 @@ let
       builtins.attrValues (builtins.mapAttrs mkService traefikServices.services)
     );
   };
+
+  # systemd tmpfiles rules to create respective service directories
+  tmpfilesRules = builtins.concatLists (
+    builtins.attrValues (
+      builtins.mapAttrs (
+        _: svc:
+        if svc ? storage then
+          [
+            "d '${svc.storage}' 0755 ${svc.user} ${svc.group} -"
+          ]
+        else
+          [ ]
+      ) services
+    )
+  );
 in
 {
   age.secrets.cloudflare.file = ../../secrets/cloudflare.env.age;
+
+  systemd.tmpfiles.rules = tmpfilesRules;
 
   imports = [ ];
 
@@ -108,11 +140,17 @@ in
   services.silverbullet = {
     enable = true;
     listenPort = services.silverbullet.port;
+    spaceDir = services.silverbullet.storage;
     extraArgs = [ "-L0.0.0.0" ];
   };
 
+  systemd.services.homepage-dashboard.environment = {
+    # HOMEPAGE_CONFIG_DIR = lib.mkForce services.homepage.storage;
+    # NIXPKGS_HOMEPAGE_CACHE_DIR = "/var/cache/homepage-dashboard";
+  };
   services.homepage-dashboard = {
     enable = true;
+    listenPort = services.homepage.port;
     allowedHosts = "localhost:${toString services.homepage.port},${domain}";
     services = [
       {
@@ -192,6 +230,7 @@ in
 
   services.traefik = {
     enable = true;
+    dataDir = services.traefik.storage;
 
     environmentFiles = [ config.age.secrets.cloudflare.path ];
     staticConfigOptions = {
@@ -214,13 +253,13 @@ in
 
       log = {
         level = "DEBUG";
-        filePath = "${config.services.traefik.storage}/traefik.log";
+        filePath = "${services.traefik.storage}/traefik.log";
         format = "json";
       };
 
       certificatesResolvers.letsencrypt.acme = {
         email = "postmaster@${domain}"; # dummy mail
-        storage = "${config.services.traefik.storage}/acme.json";
+        storage = "${services.traefik.storage}/acme.json";
         dnschallenge.provider = "cloudflare";
       };
 
@@ -232,6 +271,12 @@ in
         root = {
           rule = "Host(`${domain}`) && PathPrefix(`/`)";
           service = "homepage";
+          entryPoints = [ "https" ];
+        };
+        # dashboard
+        traefik = {
+          rule = "Host(`${services.traefik.prefix}.${domain}`)";
+          service = "api@internal";
           entryPoints = [ "https" ];
         };
       }

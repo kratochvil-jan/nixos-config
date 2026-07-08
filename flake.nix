@@ -181,75 +181,96 @@
         # 2. `nixos-anywhere` install this configuration that puts:
         #    - /boot on SD card
         #    - rootfs on SATA drive over PCIE
-        "rpi5-sd-pcie" = nixos-raspberrypi.lib.nixosSystem {
-          system = "aarch64-linux";
-          specialArgs = { inherit inputs outputs self; };
-          modules = [
-            # Hardware
-            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
-            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
-            disko.nixosModules.disko
-            ./pcie-sd-btrfs.nix
-            ./modules/base.nix
-            (
-              { pkgs, ... }:
+        "rpi5-sd-pcie" =
+          let
+            system = "aarch64-linux";
+            latestPkgs = import nixpkgs {
+              inherit system;
+            };
+            overlay = final: prev: {
+              silverbullet = latestPkgs.silverbullet;
+            };
+          in
+          nixos-raspberrypi.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inherit inputs outputs self; };
+            modules = [
               {
-                virtualisation.docker.enable = true;
-                virtualisation.docker.storageDriver = "btrfs";
-                virtualisation.docker.daemon.settings.experimental = true;
-
-                hardware.bluetooth.enable = false;
-                environment.systemPackages = [
-                  pkgs.dracut # for lsinitrd
-                ];
-
-                # TODO i want uboot
-                # testing uboot
-                # boot.loader.raspberry-pi.bootloader = "uboot";
-
-                # to allow booting from PCIE
-                boot.kernelModules = [
-                  "libata"
-                  "libahci"
-                  "ahci"
-                ];
-                # boot.loader.systemd-boot.enable = true;
-                boot.loader.raspberry-pi.enable = true;
-                boot.loader.raspberry-pi.bootloader = "kernel";
-                boot.tmp.useTmpfs = true;
-
-                services.openssh.enable = true;
-
-                users.users.nixos.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-                users.users.nixos.initialPassword = "changeme";
-                users.users.nixos.isNormalUser = true;
-
-                users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-                users.users.root.initialPassword = "changeme";
-
-                hardware.raspberry-pi.config.all = {
-                  dt-overlays = {
-                    disable-bt.enable = true;
-                    disable-bt.params = { };
-                    # needed for radxa penta sata hat
-                    pcie-32bit-dma-pi5.enable = true;
-                    pcie-32bit-dma-pi5.params = { };
-                  };
-                  base-dt-params = {
-                    pciex1 = {
-                      enable = true;
-                      value = "on";
-                    };
-                    pciex1_gen = {
-                      enable = true;
-                      value = "3";
-                    };
-                  };
-                };
+                nixpkgs.overlays = [ overlay ];
               }
-            )
-          ];
-        };
+              # Hardware
+              inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
+              inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
+              disko.nixosModules.disko
+              ./pcie-sd-btrfs.nix
+              inputs.agenix.nixosModules.default
+              ./hosts/rpi5/cloud.nix
+              ./modules/base.nix
+              (
+                { pkgs, ... }:
+                {
+                  virtualisation.docker.enable = true;
+                  virtualisation.docker.storageDriver = "btrfs";
+                  virtualisation.docker.daemon.settings.experimental = true;
+
+                  hardware.bluetooth.enable = false;
+                  environment.systemPackages = [
+                    pkgs.dracut # for lsinitrd
+                  ];
+
+                  # TODO i want uboot
+                  # testing uboot
+                  # boot.loader.raspberry-pi.bootloader = "uboot";
+
+                  # to allow booting from PCIE
+                  boot.kernelModules = [
+                    "libata"
+                    "libahci"
+                    "ahci"
+                  ];
+                  # boot.loader.systemd-boot.enable = true;
+                  boot.loader.raspberry-pi.enable = true;
+                  boot.loader.raspberry-pi.bootloader = "kernel";
+                  boot.tmp.useTmpfs = true;
+
+                  services.openssh.enable = true;
+
+                  users.users.nixos.openssh.authorizedKeys.keyFiles = [
+                    ./test-rpi.pub
+                    ./secrets/hosts/lap/users/jan.pub
+                  ];
+                  users.users.nixos.initialPassword = "changeme";
+                  users.users.nixos.isNormalUser = true;
+
+                  users.users.root.openssh.authorizedKeys.keyFiles = [
+                    ./test-rpi.pub
+                    ./secrets/hosts/lap/users/jan.pub
+                  ];
+                  users.users.root.initialPassword = "changeme";
+
+                  hardware.raspberry-pi.config.all = {
+                    dt-overlays = {
+                      disable-bt.enable = true;
+                      disable-bt.params = { };
+                      # needed for radxa penta sata hat
+                      pcie-32bit-dma-pi5.enable = true;
+                      pcie-32bit-dma-pi5.params = { };
+                    };
+                    base-dt-params = {
+                      pciex1 = {
+                        enable = true;
+                        value = "on";
+                      };
+                      pciex1_gen = {
+                        enable = true;
+                        value = "3";
+                      };
+                    };
+                  };
+                }
+              )
+            ];
+          };
 
         # live boot USB image
         "rpi5-usb" = nixos-raspberrypi.lib.nixosSystem {
