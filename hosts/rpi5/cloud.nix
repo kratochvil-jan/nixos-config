@@ -49,6 +49,7 @@ let
     };
     forgejo = {
       port = 8004;
+      # forgejo has custom tmpfiles rules to create appropriate paths
       storage = "/services/forgejo";
       icon = "forgejo.svg";
       prefix = "git";
@@ -213,9 +214,10 @@ in
     in
     {
       enable = true;
-      database.type = "postgres";
+      database.type = "sqlite3";
       # Enable support for Git Large File Storage
       lfs.enable = true;
+      stateDir = services.forgejo.storage;
       settings = {
         server = {
           DOMAIN = "${services.forgejo.prefix}.${domain}";
@@ -224,7 +226,7 @@ in
           HTTP_PORT = services.forgejo.port;
         };
         # You can temporarily allow registration to create an admin user.
-        service.DISABLE_REGISTRATION = true;
+        # service.DISABLE_REGISTRATION = true;
         # Add support for actions, based on act: https://github.com/nektos/act
         actions = {
           ENABLED = true;
