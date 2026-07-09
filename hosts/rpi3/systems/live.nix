@@ -8,6 +8,7 @@
 {
   imports = [
     ../bootable-sd.nix
+    ../../../modules/base.nix
   ];
 
   networking.networkmanager.enable = true;

@@ -10,7 +10,6 @@
   imports = [
     (modulesPath + "/profiles/minimal.nix")
     "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
-    ../../modules/base.nix
   ];
 
   boot.supportedFilesystems.zfs = lib.mkForce false;

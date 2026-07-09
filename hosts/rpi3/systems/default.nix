@@ -20,6 +20,7 @@
     inputs.agenix.nixosModules.default
     ../bootable-sd.nix
     ../cloud.nix
+    ../../../modules/base.nix
   ];
   users.users.pi = {
     isNormalUser = true;
