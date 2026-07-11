@@ -12,9 +12,13 @@ let
 
   domain = "kratochvil-jan.eu";
 
+  dataDir = "/var/lib/services-backed";
+
+  stripDir = dir: lib.removePrefix "/var/lib" dir;
+
   services = {
     traefik = {
-      storage = "/services/traefik";
+      storage = "${dataDir}/traefik";
       icon = "traefik.svg";
       prefix = "traefik";
       hideTraefik = true;
@@ -23,7 +27,8 @@ let
     };
     hass = {
       port = 8001;
-      storage = "/services/home-assistant";
+      storage = "${dataDir}/home-assistant";
+      createFolder = true;
       icon = "home-assistant.svg";
       prefix = "hass";
       user = "root";
@@ -31,7 +36,8 @@ let
     };
     silverbullet = {
       port = 8002;
-      storage = "/services/silverbullet";
+      storage = "${dataDir}/silverbullet";
+      createFolder = true;
       icon = "markdown.svg";
       prefix = "silverbullet";
       user = getUser "silverbullet";
@@ -40,7 +46,7 @@ let
     homepage = {
       port = 8003;
       # no dynamic storage - only static configs from nix
-      # storage = "/services/homepage";
+      # storage = "${dataDir}/homepage";
       prefix = "";
       hideHomepage = true;
       hideTraefik = true;
@@ -50,7 +56,7 @@ let
     forgejo = {
       port = 8004;
       # forgejo has custom tmpfiles rules to create appropriate paths
-      storage = "/services/forgejo";
+      storage = "${dataDir}/forgejo";
       icon = "forgejo.svg";
       prefix = "git";
       user = getUser "forgejo";
@@ -58,7 +64,8 @@ let
     };
     vaultwarden = {
       port = 8005;
-      storage = "/services/vaultwarden";
+      storage = "${dataDir}/vaultwarden";
+      createFolder = true;
       icon = "vaultwarden.svg";
       prefix = "vaultwarden";
       user = getUser "vaultwarden";
@@ -66,7 +73,8 @@ let
     };
     immich = {
       port = 8006;
-      storage = "/services/immich";
+      storage = "${dataDir}/immich";
+      createFolder = true;
       icon = "immich.svg";
       prefix = "immich";
       user = getUser "immich";
@@ -74,11 +82,12 @@ let
       redisPort = 8096;
     };
     postgresql = {
-      storage = "/services/postgresql";
+      storage = "${dataDir}/postgresql";
+      createFolder = true;
       hideTraefik = true;
       hideHomepage = true;
-      user = "postgresql";
-      group = "postgresql";
+      user = "postgres";
+      group = "postgres";
     };
   };
 
@@ -126,13 +135,13 @@ let
 
   # systemd tmpfiles rules to create respective service directories
   tmpfilesRules = [
-    "d '/services' 0755 root root -"
+    "d '${dataDir}' 0755 root root -"
   ]
   ++ builtins.concatLists (
     builtins.attrValues (
       builtins.mapAttrs (
         _: svc:
-        if svc ? storage then
+        if svc ? createFolder && svc.createFolder == true then
           [
             "d '${svc.storage}' 0755 ${svc.user} ${svc.group} -"
           ]
@@ -322,16 +331,22 @@ in
 
   systemd.services.vaultwarden = {
     environment.ROCKET_PORT = (toString services.vaultwarden.port);
-    serviceConfig.StateDirectory = lib.mkForce "";
+    serviceConfig.StateDirectory = lib.mkForce (stripDir services.vaultwarden.storage);
+    # TODO this can be removed
     serviceConfig.PrivateUsers = lib.mkForce false;
+    # TODO this can be removed
     serviceConfig.ReadWritePaths = [ services.vaultwarden.storage ];
   };
   services.vaultwarden = {
     enable = true;
     domain = "${domain}";
-    config.DATA_FOLDER = services.vaultwarden.storage;
+    config.DATA_FOLDER = lib.mkForce services.vaultwarden.storage;
   };
 
+  systemd.services.immich-server.serviceConfig = {
+    StateDirectory = stripDir services.immich.storage;
+    # RuntimeDirectory = stripDir services.immich.storage;
+  };
   services.immich = {
     enable = true;
     accelerationDevices = [
@@ -343,7 +358,11 @@ in
     redis.port = services.immich.redisPort;
   };
 
+  systemd.services.postgresql.serviceConfig = {
+    # RuntimeDirectory = lib.mkForce (stripDir services.postgresql.storage);
+  };
   services.postgresql = {
+    enable = true;
     dataDir = services.postgresql.storage;
   };
 
