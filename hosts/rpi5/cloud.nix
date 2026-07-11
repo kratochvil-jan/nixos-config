@@ -32,7 +32,7 @@ let
     silverbullet = {
       port = 8002;
       storage = "/services/silverbullet";
-      icon = "silverbullet.svg";
+      icon = "markdown.svg";
       prefix = "silverbullet";
       user = getUser "silverbullet";
       group = getGroup "silverbullet";
@@ -63,6 +63,22 @@ let
       prefix = "vaultwarden";
       user = getUser "vaultwarden";
       group = getGroup "vaultwarden";
+    };
+    immich = {
+      port = 8006;
+      storage = "/services/immich";
+      icon = "immich.svg";
+      prefix = "immich";
+      user = getUser "immich";
+      group = getGroup "immich";
+      redisPort = 8096;
+    };
+    postgresql = {
+      storage = "/services/postgresql";
+      hideTraefik = true;
+      hideHomepage = true;
+      user = "postgresql";
+      group = "postgresql";
     };
   };
 
@@ -109,7 +125,10 @@ let
   };
 
   # systemd tmpfiles rules to create respective service directories
-  tmpfilesRules = builtins.concatLists (
+  tmpfilesRules = [
+    "d '/services' 0755 root root -"
+  ]
+  ++ builtins.concatLists (
     builtins.attrValues (
       builtins.mapAttrs (
         _: svc:
@@ -311,6 +330,21 @@ in
     enable = true;
     domain = "${domain}";
     config.DATA_FOLDER = services.vaultwarden.storage;
+  };
+
+  services.immich = {
+    enable = true;
+    accelerationDevices = [
+      "/dev/dri/renderD128"
+    ];
+    port = services.immich.port;
+    settings = null; # configuration is done dynamically via data
+    mediaLocation = services.immich.storage;
+    redis.port = services.immich.redisPort;
+  };
+
+  services.postgresql = {
+    dataDir = services.postgresql.storage;
   };
 
   networking.firewall = {
