@@ -12,9 +12,9 @@ let
 
   domain = "kratochvil-jan.eu";
 
-  dataDir = "/var/lib/services-backed";
+  dataDir = "/var/lib/backed-services";
 
-  stripDir = dir: lib.removePrefix "/var/lib" dir;
+  stripDir = dir: lib.removePrefix "/var/lib/" dir;
 
   services = {
     traefik = {
@@ -332,10 +332,6 @@ in
   systemd.services.vaultwarden = {
     environment.ROCKET_PORT = (toString services.vaultwarden.port);
     serviceConfig.StateDirectory = lib.mkForce (stripDir services.vaultwarden.storage);
-    # TODO this can be removed
-    serviceConfig.PrivateUsers = lib.mkForce false;
-    # TODO this can be removed
-    serviceConfig.ReadWritePaths = [ services.vaultwarden.storage ];
   };
   services.vaultwarden = {
     enable = true;
@@ -344,8 +340,7 @@ in
   };
 
   systemd.services.immich-server.serviceConfig = {
-    StateDirectory = stripDir services.immich.storage;
-    # RuntimeDirectory = stripDir services.immich.storage;
+    StateDirectory = lib.mkForce (stripDir services.immich.storage);
   };
   services.immich = {
     enable = true;
@@ -358,11 +353,7 @@ in
     redis.port = services.immich.redisPort;
   };
 
-  systemd.services.postgresql.serviceConfig = {
-    # RuntimeDirectory = lib.mkForce (stripDir services.postgresql.storage);
-  };
   services.postgresql = {
-    enable = true;
     dataDir = services.postgresql.storage;
   };
 
