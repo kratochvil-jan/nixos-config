@@ -160,7 +160,7 @@ in
 
   virtualisation.oci-containers.backend = "docker";
   virtualisation.oci-containers.containers.home-assistant = {
-    image = "ghcr.io/home-assistant/home-assistant:2026.1.1";
+    image = "ghcr.io/home-assistant/home-assistant:2026.7.2";
     ports = [ "${toString services.hass.port}:8123" ];
     volumes = [
       "${services.hass.storage}:/config"
