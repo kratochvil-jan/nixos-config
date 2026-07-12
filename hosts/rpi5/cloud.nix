@@ -82,7 +82,7 @@ let
       redisPort = 8096;
     };
     postgresql = {
-      storage = "${dataDir}/postgresql";
+      storage = "${dataDir}/postgresql/${config.services.postgresql.package.psqlSchema}";
       createFolder = true;
       hideTraefik = true;
       hideHomepage = true;
@@ -342,18 +342,24 @@ in
   systemd.services.immich-server.serviceConfig = {
     StateDirectory = lib.mkForce (stripDir services.immich.storage);
   };
+  users.users.immich.extraGroups = [
+    "video"
+    "render"
+  ];
+
   services.immich = {
     enable = true;
     accelerationDevices = [
       "/dev/dri/renderD128"
     ];
     port = services.immich.port;
-    settings = null; # configuration is done dynamically via data
+    settings = null; # configuration is done dynamically via data - to allow config from web
     mediaLocation = services.immich.storage;
     redis.port = services.immich.redisPort;
   };
 
   services.postgresql = {
+    package = pkgs.postgresql_17; # current version of db for immich
     dataDir = services.postgresql.storage;
   };
 
