@@ -73,13 +73,13 @@ let
     };
     immich = {
       port = 8006;
+      redisPort = 8007;
       storage = "${dataDir}/immich";
       createFolder = true;
       icon = "immich.svg";
       prefix = "immich";
       user = getUser "immich";
       group = getGroup "immich";
-      redisPort = 8096;
     };
     postgresql = {
       storage = "${dataDir}/postgresql/${config.services.postgresql.package.psqlSchema}";
@@ -88,6 +88,18 @@ let
       hideHomepage = true;
       user = "postgres";
       group = "postgres";
+    };
+    jellyfin = {
+      port = 8096; # HTTP. looks like i cant change port of jellyfin
+      discoveryPort = 7359; # for UDP network discovery
+      dlnaPort = 1900; # for DLNA streaming
+      # httpsPort = lib.mkDefault 8920; # unused, it's behind reverse proxy
+      storage = "${dataDir}/jellyfin";
+      createFolder = true;
+      icon = "jellyfin.svg";
+      prefix = "jellyfin";
+      user = getUser "jellyfin";
+      group = getGroup "jellyfin";
     };
   };
 
@@ -361,12 +373,24 @@ in
   services.postgresql = {
     package = pkgs.postgresql_17; # current version of db for immich
     dataDir = services.postgresql.storage;
+    # default port
+  };
+
+  services.jellyfin = {
+    enable = true;
+    # apparently jellyfin has discontinued hardware acceleration for rpi
+    dataDir = services.jellyfin.storage;
   };
 
   networking.firewall = {
     allowedTCPPorts = [
       80
       443
+      services.jellyfin.port # https
+    ];
+    allowedUDPPorts = [
+      services.jellyfin.discoveryPort
+      services.jellyfin.dlnaPort
     ];
   };
 
