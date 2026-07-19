@@ -5,6 +5,10 @@ let
       system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLlhVrcSHBNr/9JwW8TpTcIwQwCmXM4fObGNgFOSrD9";
       users.jan = builtins.readFile ./hosts/lap/users/jan.pub;
     };
+    big = {
+      system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP7W/yzSaSolOXmUEgFjAZD8YQwXiKrMCGHE8gRYuHaS";
+      users.jan = builtins.readFile ./hosts/big/users/jan.pub;
+    };
     rpi3.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoJkx6klrM5N3aJ3Mb7fdtjqb2BsMuN0P4xrgqpxeVm";
     rpi5.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHmzDV4TUM+HPHCicxrpQU8BkLkUweqjGbDa2qNssSq";
   };
@@ -35,5 +39,11 @@ in
   "hosts/lap/wg.key.env.age".publicKeys = [
     systems.lap.users.jan
     systems.lap.system
+  ];
+
+  "hosts/big/jan.pw.age".publicKeys = [
+    systems.lap.users.jan
+    systems.big.users.jan
+    systems.big.system
   ];
 }

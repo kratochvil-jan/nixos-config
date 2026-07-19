@@ -160,256 +160,27 @@
       # some custom alias flake outputs
       systems = {
         lap = self.nixosConfigurations.lap.config.system.build.toplevel;
+        lapTest = self.nixosConfigurations.lapTest.config.system.build.toplevel;
         big = self.nixosConfigurations.big.config.system.build.toplevel;
         rpi5 = self.nixosConfigurations.rpi5.config.system.build.toplevel;
         rpi3 = self.nixosConfigurations.rpi3.config.system.build.toplevel;
       };
       # installer images for provisioning RPI devices
       sdImages = {
-        rpi5 = self.nixosConfigurations.rpi5-installer.config.system.build.sdImage;
-        rpi3 = self.nixosConfigurations.rpi3-installer.config.system.build.sdImage;
+        rpi5 = self.nixosConfigurations.live-rpi5.config.system.build.sdImage;
+        rpi3 = self.nixosConfigurations.live-rpi3.config.system.build.sdImage;
       };
 
       nixosConfigurations = {
-        "big" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs outputs self; };
-          modules = [
-            ./hosts/big/configuration.nix
-            ./overlays/zjstatus.nix
-          ];
-        };
+        "big" = import ./hosts/big { inherit inputs; };
+        "lap" = import ./hosts/lap { inherit inputs; };
+        "rpi3" = import ./hosts/rpi3 { inherit inputs; };
+        "rpi5" = import ./hosts/rpi5 { inherit inputs; };
 
-        "lap" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs outputs self; };
-          modules = [
-            ./hosts/lap/configuration.nix
-            ./overlays/zjstatus.nix
-            ./overlays/freecad.nix
-          ];
-        };
-
-        # 1. boot a live system on USB (cannot install on the same device)
-        # 2. `nixos-anywhere` install this configuration that puts:
-        #    - /boot on SD card
-        #    - rootfs on SATA drive over PCIE
-        "rpi5-sd-pcie" =
-          let
-            system = "aarch64-linux";
-            latestPkgs = import nixpkgs {
-              inherit system;
-            };
-            overlay = final: prev: {
-              silverbullet = latestPkgs.silverbullet;
-            };
-          in
-          nixos-raspberrypi.lib.nixosSystem {
-            inherit system;
-            specialArgs = { inherit inputs outputs self; };
-            modules = [
-              {
-                nixpkgs.overlays = [ overlay ];
-              }
-              # Hardware
-              inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
-              inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
-              disko.nixosModules.disko
-              ./pcie-sd-btrfs.nix
-              inputs.agenix.nixosModules.default
-              ./hosts/rpi5/cloud.nix
-              ./modules/base.nix
-              (
-                { pkgs, ... }:
-                {
-                  virtualisation.docker.enable = true;
-                  virtualisation.docker.storageDriver = "btrfs";
-                  virtualisation.docker.daemon.settings.experimental = true;
-
-                  hardware.bluetooth.enable = false;
-                  environment.systemPackages = [
-                    pkgs.dracut # for lsinitrd
-                  ];
-
-                  # TODO i want uboot
-                  # testing uboot
-                  # boot.loader.raspberry-pi.bootloader = "uboot";
-
-                  # to allow booting from PCIE
-                  boot.kernelModules = [
-                    "libata"
-                    "libahci"
-                    "ahci"
-                  ];
-                  # boot.loader.systemd-boot.enable = true;
-                  boot.loader.raspberry-pi.enable = true;
-                  boot.loader.raspberry-pi.bootloader = "kernel";
-                  boot.tmp.useTmpfs = true;
-
-                  services.openssh.enable = true;
-
-                  users.users.nixos.openssh.authorizedKeys.keyFiles = [
-                    ./test-rpi.pub
-                    ./secrets/hosts/lap/users/jan.pub
-                  ];
-                  users.users.nixos.initialPassword = "changeme";
-                  users.users.nixos.isNormalUser = true;
-
-                  users.users.root.openssh.authorizedKeys.keyFiles = [
-                    ./test-rpi.pub
-                    ./secrets/hosts/lap/users/jan.pub
-                  ];
-                  users.users.root.initialPassword = "changeme";
-
-                  hardware.raspberry-pi.config.all = {
-                    dt-overlays = {
-                      disable-bt.enable = true;
-                      disable-bt.params = { };
-                      # needed for radxa penta sata hat
-                      pcie-32bit-dma-pi5.enable = true;
-                      pcie-32bit-dma-pi5.params = { };
-                    };
-                    base-dt-params = {
-                      pciex1 = {
-                        enable = true;
-                        value = "on";
-                      };
-                      pciex1_gen = {
-                        enable = true;
-                        value = "3";
-                      };
-                    };
-                  };
-                  system.stateVersion = "25.11";
-                }
-              )
-            ];
-          };
-
-        # live boot USB image
-        "rpi5-usb" = nixos-raspberrypi.lib.nixosSystem {
-          system = "aarch64-linux";
-          specialArgs = { inherit inputs outputs self; };
-          modules = [
-            # Hardware
-            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
-            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
-            disko.nixosModules.disko
-            ./usb-btrfs.nix
-            {
-              nix.settings.experimental-features = [
-                "nix-command"
-                "flakes"
-              ];
-              # does not boot from usb with uboot :(
-              # boot.loader.raspberry-pi.bootloader = "uboot";
-
-              boot.loader.raspberry-pi.bootloader = "kernel";
-              boot.tmp.useTmpfs = true;
-
-              services.openssh.enable = true;
-
-              users.users.nixos.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-              users.users.nixos.initialPassword = "changeme";
-              users.users.nixos.isNormalUser = true;
-
-              users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-              users.users.root.initialPassword = "changeme";
-
-              hardware.raspberry-pi.config.all = {
-                base-dt-params = {
-                  pciex1 = {
-                    enable = true;
-                    value = "on";
-                  };
-                  pciex1_gen = {
-                    enable = true;
-                    value = "3";
-                  };
-                };
-              };
-            }
-          ];
-        };
-
-        # bootable SD image
-        "rpi5-installer" = nixos-raspberrypi.lib.nixosInstaller {
-          system = "aarch64-linux";
-          specialArgs = inputs;
-          modules = with nixos-raspberrypi.nixosModules; [
-            raspberry-pi-5.base
-            raspberry-pi-5.page-size-16k
-            {
-              boot.loader.raspberry-pi.bootloader = "kernel";
-              # boot.tmp.useTmpfs = true;
-              users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-
-              sdImage.compressImage = false;
-
-              hardware.raspberry-pi.config.all = {
-                dt-overlays = {
-                  pcie-32bit-dma-pi5.enable = true;
-                  pcie-32bit-dma-pi5.params = { };
-                };
-                base-dt-params = {
-                  pciex1 = {
-                    enable = true;
-                    value = "on";
-                  };
-                  pciex1_gen = {
-                    enable = true;
-                    value = "3";
-                  };
-                };
-              };
-            }
-          ];
-        };
-
-        "rpi3" = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
-          specialArgs = { inherit inputs outputs self; };
-          modules = [
-            ./hosts/rpi3/systems/default.nix
-          ];
-        };
-
-        "rpi3-live" = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
-          specialArgs = { inherit inputs outputs self; };
-          modules = [
-            ./hosts/rpi3/systems/live.nix
-          ];
-        };
-
-        # fresh sd image that boots fine
-        # using nixos-raspberrypi repo
-        # bootable SD image with uart working
-        # however this only works with the "kernel" bootloader
-        "rpi3-with-uart" = nixos-raspberrypi.lib.nixosInstaller {
-          system = "aarch64-linux";
-          specialArgs = inputs;
-          modules = with nixos-raspberrypi.nixosModules; [
-            raspberry-pi-3.base
-            (
-              { pkgs, ... }:
-              {
-                boot.kernelParams = pkgs.lib.mkForce [
-                  "console=ttyS0,115200"
-                  "nohibernate"
-                  "loglevel=7"
-                  "lsm=landlock,yama,bpf"
-                ];
-                boot.loader.raspberry-pi.enable = true;
-                boot.tmp.useTmpfs = true;
-                boot.loader.raspberry-pi.bootloader = "kernel";
-                boot.loader.systemd-boot.enable = false;
-                boot.loader.efi.canTouchEfiVariables = true;
-                users.users.root.openssh.authorizedKeys.keyFiles = [ ./test-rpi.pub ];
-              }
-            )
-          ];
-        };
+        # Installer systems. Only defined so we can use the *.sdImage derivation
+        "live-rpi3" = import ./installers/rpi3.nix { inherit inputs; };
+        "live-rpi3-alt" = import ./installers/rpi3-alt.nix { inherit inputs; };
+        "live-rpi5" = import ./installers/rpi5.nix { inherit inputs; };
       };
     };
 }

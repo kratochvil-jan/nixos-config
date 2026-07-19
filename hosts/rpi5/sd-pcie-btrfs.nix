@@ -1,5 +1,8 @@
 { config, lib, ... }:
 
+# bootloader on SD card
+# rootfs on SSD with btrfs
+
 let
   firmwarePartition = lib.recursiveUpdate {
     # label = "FIRMWARE";
@@ -76,21 +79,51 @@ in
           type = "gpt";
           partitions = {
             system = {
-              label = "PCIE_NIXOS";
+              label = "ROOTFS";
               type = "8305"; # Linux ARM64 root (/)
               size = "100%";
               content = {
-                type = "filesystem";
-                extraArgs = [
-                  # "--label nixos"
-                ];
-                format = "ext4";
-                mountpoint = "/";
+                type = "btrfs";
+                subvolumes = {
+                  "/rootfs" = {
+                    mountpoint = "/";
+                    mountOptions = [ "noatime" ];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  # TODO this needs to be moved to /var/lib/backed-services
+                  "/services" = {
+                    mountpoint = "/services";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                };
               };
             };
           };
         };
-      };
+      }; # main
     };
   };
 }

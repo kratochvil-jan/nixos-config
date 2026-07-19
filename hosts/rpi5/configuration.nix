@@ -1,29 +1,51 @@
 {
   config,
   lib,
-  pkgs,
+  pkgs, # nixpkgs from nixos-raspberrypi
   inputs,
+  latestPkgs, # nixpkgs
   ...
 }:
+let
+  system = "aarch64-linux";
+  latestPkgs = import inputs.nixpkgs {
+    inherit system;
+  };
+  overlay = final: prev: {
+    silverbullet = latestPkgs.silverbullet;
+    # TODO
+    # immich = latestPkgs.immich;
+    # forgejo = latestPkgs.forgejo;
+    # jellyfin = latestPkgs.jellyfin;
+    # traefik = latestPkgs.traefik;
+  };
+in
 {
   imports = [
-    # Disk
     inputs.disko.nixosModules.disko
-    ./disk-config.nix
+    # bootloader on SD card
+    # rootfs on SSD with btrfs
+    ./sd-pcie-btrfs.nix
 
-    # Age
+    # HW specific configs for rpi5
+    ./hw.nix
+
     inputs.agenix.nixosModules.default
 
     # System
+    ../../modules/base.nix
     ../common.nix
-    #
-    # # Users
+
+    # Users
     ../users/root.nix
-    ../users/jan.nix
 
     # Home Manager
     ../home-manager.nix
+
+    ./cloud.nix
   ];
+
+  nixpkgs.overlays = [ overlay ];
 
   # Nix
   nix.settings.trusted-users = [
@@ -32,11 +54,21 @@
     "wheel"
   ];
 
-  # Bootloader
+  # Users
+  users.mutableUsers = false;
 
-  boot.loader.raspberry-pi.bootloader = "kernel";
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.efi.canTouchEfiVariables = true;
+  users.users.root.openssh.authorizedKeys.keyFiles = [
+    ../../secrets/hosts/lap/users/jan.pub
+  ];
+  users.users.root.password = null;
+
+  # Virtualisation
+  virtualisation.docker.enable = true;
+  virtualisation.docker.storageDriver = "btrfs";
+  virtualisation.docker.daemon.settings.experimental = true;
+
+  # Peripherals
+  hardware.bluetooth.enable = false;
 
   # Networking
 
@@ -44,36 +76,22 @@
     hostName = "rpi5";
 
     networkmanager.enable = true;
+    # TODO
+    # disable networkmanager, use systemd-networkd with DHCP
     wireless.enable = false;
     firewall.enable = true;
     nftables.enable = true;
   };
 
-  # Perihperals
-  # empty
-
-  # Virtualisation
-
-  virtualisation.docker.enable = true;
-
   # Audio
-
-  services.pipewire.enable = false;
-  services.pulseaudio.enable = false;
+  services.pipewire.enable = true;
+  services.pulseaudio.enable = true;
 
   # Graphics
-
-  hardware.graphics.enable = false;
+  hardware.graphics.enable = true;
 
   # Services
+  services.openssh.enable = true;
 
-  services.udev.extraRules = ''
-    # Ignore partitions with "Required Partition" GPT partition attribute
-    # On our RPis this is firmware (/boot/firmware) partition
-    ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
-      ENV{ID_PART_ENTRY_FLAGS}=="0x1", \
-      ENV{UDISKS_IGNORE}="1"
-  '';
-
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "25.11";
 }

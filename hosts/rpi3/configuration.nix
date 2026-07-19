@@ -8,9 +8,8 @@
 
 {
 
-  age.secrets.pi.file = ../../../secrets/users/rpi3/pi.age;
   age.secrets.wifi = {
-    file = ../../../secrets/wifi.env.age;
+    file = ../../secrets/wifi.env.age;
     mode = "700";
     owner = config.systemd.services.wpa_supplicant.serviceConfig.User;
     group = config.systemd.services.wpa_supplicant.serviceConfig.Group;
@@ -18,25 +17,14 @@
 
   imports = [
     inputs.agenix.nixosModules.default
-    ../bootable-sd.nix
-    ../cloud.nix
-    ../../../modules/base.nix
+    ./bootable-sd.nix
+    ./cloud.nix
+    ../../modules/base.nix
   ];
-  users.users.pi = {
-    isNormalUser = true;
-    hashedPasswordFile = config.age.secrets.pi.path;
-    openssh.authorizedKeys.keyFiles = [
-      ../../../test-rpi.pub
-      ../../../secrets/hosts/lap/users/jan.pub
-    ];
-  };
 
-  # TODO
   users.users.root.openssh.authorizedKeys.keyFiles = [
-    ../../../test-rpi.pub
-    ../../../secrets/hosts/lap/users/jan.pub
+    ../../secrets/hosts/lap/users/jan.pub
   ];
-  users.users.root.initialPassword = "changeme";
 
   nix.gc = {
     automatic = true;

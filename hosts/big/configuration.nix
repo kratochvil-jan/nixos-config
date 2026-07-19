@@ -93,12 +93,6 @@ in
 
   services.resolved.enable = true;
 
-  # Security
-
-  security.pki.certificateFiles = [
-    ../../certs/home-ca.crt
-  ];
-
   # Perihperals
   # empty
 
