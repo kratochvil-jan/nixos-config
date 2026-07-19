@@ -112,7 +112,7 @@
                 flake-check = {
                   enable = true;
                   name = "nix flake check";
-                  entry = "nix flake check --no-build";
+                  entry = "nix flake check --no-build --all-systems";
                   language = "system";
                   pass_filenames = false;
                   files = "(^.*\\.nix$)|(^flake\\.lock$)|";
