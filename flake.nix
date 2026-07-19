@@ -157,12 +157,18 @@
 
       legacyPackages = forEachSystem (system: mkPkgs system);
 
-      systems.lap = self.nixosConfigurations.lap.config.system.build.toplevel;
-      systems.big = self.nixosConfigurations.big.config.system.build.toplevel;
-      systems.rpi5 = self.nixosConfigurations.rpi5.config.system.build.toplevel;
-      systems.rpi3 = self.nixosConfigurations.rpi3.config.system.build.toplevel;
-      sdImages.rpi5 = self.nixosConfigurations.rpi5-installer.config.system.build.sdImage;
-      sdImages.rpi3 = self.nixosConfigurations.rpi3-installer.config.system.build.sdImage;
+      # some custom alias flake outputs
+      systems = {
+        lap = self.nixosConfigurations.lap.config.system.build.toplevel;
+        big = self.nixosConfigurations.big.config.system.build.toplevel;
+        rpi5 = self.nixosConfigurations.rpi5.config.system.build.toplevel;
+        rpi3 = self.nixosConfigurations.rpi3.config.system.build.toplevel;
+      };
+      # installer images for provisioning RPI devices
+      sdImages = {
+        rpi5 = self.nixosConfigurations.rpi5-installer.config.system.build.sdImage;
+        rpi3 = self.nixosConfigurations.rpi3-installer.config.system.build.sdImage;
+      };
 
       nixosConfigurations = {
         "big" = nixpkgs.lib.nixosSystem {
