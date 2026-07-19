@@ -39,6 +39,8 @@
 
     git-hooks.url = "github:cachix/git-hooks.nix";
 
+    # temporary fix for freecad
+    nixpkgs-freecad-good.url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
   };
 
   outputs =
@@ -67,9 +69,11 @@
 
       inherit (self) outputs;
 
+      # is this overlay even used anywhere?
       overlays = [
         (final: prev: {
           zjstatus = zjstatus.packages.${prev.system}.default;
+          freecad = inputs.nixpkgs-freecad-good.legacyPackages.${prev.system}.freecad;
         })
       ];
 
@@ -151,6 +155,8 @@
         }
       );
 
+      legacyPackages = forEachSystem (system: mkPkgs system);
+
       systems.lap = self.nixosConfigurations.lap.config.system.build.toplevel;
       systems.big = self.nixosConfigurations.big.config.system.build.toplevel;
       systems.rpi5 = self.nixosConfigurations.rpi5.config.system.build.toplevel;
@@ -174,6 +180,7 @@
           modules = [
             ./hosts/lap/configuration.nix
             ./overlays/zjstatus.nix
+            ./overlays/freecad.nix
           ];
         };
 
