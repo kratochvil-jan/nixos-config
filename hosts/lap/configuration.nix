@@ -57,6 +57,7 @@ in
   nix.distributedBuilds = true;
   nix.buildMachines = [
     (import ../rpi3/build-machine.nix)
+    (import ../rpi5/build-machine.nix)
   ];
 
   boot = {
