@@ -118,12 +118,20 @@
                   files = "(^.*\\.nix$)|(^flake\\.lock$)|";
                   stages = [ "pre-push" ];
                 };
+                gitleaks = {
+                  enable = true;
+                  name = "gitleaks";
+                  entry = "${pkgs.gitleaks}/bin/gitleaks git --pre-commit";
+                  language = "system";
+                  pass_filenames = false;
+                };
               in
               {
                 # keep-sorted start
                 check-executables-have-shebangs.enable = true;
                 end-of-file-fixer.enable = true;
                 flake-check = flake-check;
+                gitleaks = gitleaks;
                 keep-sorted.enable = true;
                 nixfmt.enable = true;
                 shellcheck.enable = true;
@@ -148,6 +156,7 @@
             nativeBuildInputs = with pkgs; [
               # keep-sorted start
               enabledPackages # the enabled hooks from `checks`
+              gitleaks
               nix-output-monitor # `nom`
               # keep-sorted end
             ];
