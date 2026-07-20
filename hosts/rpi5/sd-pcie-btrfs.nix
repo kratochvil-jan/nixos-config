@@ -110,9 +110,8 @@ in
                       "noatime"
                     ];
                   };
-                  # TODO this needs to be moved to /var/lib/backed-services
-                  "/services" = {
-                    mountpoint = "/services";
+                  "/backed-services" = {
+                    mountpoint = "/var/lib/backed-services";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"
