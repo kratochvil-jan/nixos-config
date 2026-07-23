@@ -74,10 +74,7 @@ in
 
   networking = {
     hostName = "rpi5";
-
-    networkmanager.enable = true;
-    # TODO
-    # disable networkmanager, use systemd-networkd with DHCP
+    dhcpcd.enable = true; # do not use NetworkManager
     wireless.enable = false;
     firewall.enable = true;
     nftables.enable = true;
