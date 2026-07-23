@@ -12,7 +12,7 @@ inputs.nixos-raspberrypi.lib.nixosInstaller {
     {
       boot.loader.raspberry-pi.bootloader = "kernel";
       # boot.tmp.useTmpfs = true;
-      users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/users/jan.pub ];
+      users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/jan.pub ];
 
       sdImage.compressImage = false;
 

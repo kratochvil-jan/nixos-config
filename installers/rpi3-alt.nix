@@ -24,7 +24,7 @@ inputs.nixos-raspberrypi.lib.nixosInstaller {
         boot.loader.raspberry-pi.bootloader = "kernel";
         boot.loader.systemd-boot.enable = false;
         boot.loader.efi.canTouchEfiVariables = true;
-        users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/users/jan.pub ];
+        users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/jan.pub ];
       }
     )
   ];

@@ -121,11 +121,6 @@ in
   # Note: the login password should match the wallet password
   security.pam.services."jan".kwallet.enable = true;
 
-  # TODO to be removed soon
-  security.pki.certificateFiles = [
-    ../../secrets/certs/home-ca.crt
-  ];
-
   # Networking
 
   networking = {

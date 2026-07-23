@@ -14,7 +14,7 @@ inputs.nixpkgs.lib.nixosSystem {
       services.openssh.enable = true;
       services.openssh.settings.PermitRootLogin = "yes";
 
-      users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/users/jan.pub ];
+      users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/jan.pub ];
       users.users.root.initialPassword = "changeme";
     }
   ];

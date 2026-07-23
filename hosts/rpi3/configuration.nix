@@ -23,7 +23,7 @@
   ];
 
   users.users.root.openssh.authorizedKeys.keyFiles = [
-    ../../secrets/hosts/lap/users/jan.pub
+    ../../secrets/hosts/lap/jan.pub
   ];
 
   nix.gc = {

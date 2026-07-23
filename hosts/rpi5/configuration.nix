@@ -58,7 +58,7 @@ in
   users.mutableUsers = false;
 
   users.users.root.openssh.authorizedKeys.keyFiles = [
-    ../../secrets/hosts/lap/users/jan.pub
+    ../../secrets/hosts/lap/jan.pub
   ];
   users.users.root.password = null;
 

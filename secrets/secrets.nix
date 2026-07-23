@@ -2,48 +2,43 @@ let
   # cat /etc/ssh/ssh_host_ed25519_key.pub
   systems = {
     lap = {
-      system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLlhVrcSHBNr/9JwW8TpTcIwQwCmXM4fObGNgFOSrD9";
-      users.jan = builtins.readFile ./hosts/lap/users/jan.pub;
+      system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLlhVrcSHBNr/9JwW8TpTcIwQwCmXM4fObGNgFOSrD9";
+      jan.pub = builtins.readFile ./hosts/lap/jan.pub;
     };
     big = {
-      system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP7W/yzSaSolOXmUEgFjAZD8YQwXiKrMCGHE8gRYuHaS";
-      users.jan = builtins.readFile ./hosts/big/users/jan.pub;
+      system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP7W/yzSaSolOXmUEgFjAZD8YQwXiKrMCGHE8gRYuHaS";
+      jan.pub = builtins.readFile ./hosts/big/jan.pub;
     };
-    rpi3.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoJkx6klrM5N3aJ3Mb7fdtjqb2BsMuN0P4xrgqpxeVm";
-    rpi5.system = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHmzDV4TUM+HPHCicxrpQU8BkLkUweqjGbDa2qNssSq";
+    rpi3.system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoJkx6klrM5N3aJ3Mb7fdtjqb2BsMuN0P4xrgqpxeVm";
+    rpi5.system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHmzDV4TUM+HPHCicxrpQU8BkLkUweqjGbDa2qNssSq";
   };
 in
 {
   "wifi.env.age".publicKeys = [
-    systems.lap.users.jan
-    systems.rpi3.system
-  ];
-
-  "users/rpi3/pi.age".publicKeys = [
-    systems.lap.users.jan
-    systems.rpi3.system
+    systems.lap.jan.pub
+    systems.rpi3.system.pub
   ];
 
   "cloudflare.env.age".publicKeys = [
-    systems.lap.users.jan
-    systems.lap.system
-    systems.rpi3.system
-    systems.rpi5.system
+    systems.lap.jan.pub
+    systems.lap.system.pub
+    systems.rpi3.system.pub
+    systems.rpi5.system.pub
   ];
 
   "hosts/lap/jan.pw.age".publicKeys = [
-    systems.lap.users.jan
-    systems.lap.system
+    systems.lap.jan.pub
+    systems.lap.system.pub
   ];
 
   "hosts/lap/wg.key.env.age".publicKeys = [
-    systems.lap.users.jan
-    systems.lap.system
+    systems.lap.jan.pub
+    systems.lap.system.pub
   ];
 
   "hosts/big/jan.pw.age".publicKeys = [
-    systems.lap.users.jan
-    systems.big.users.jan
-    systems.big.system
+    systems.lap.jan.pub
+    systems.big.jan.pub
+    systems.big.system.pub
   ];
 }
