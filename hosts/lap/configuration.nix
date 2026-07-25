@@ -21,6 +21,9 @@ in
     # Age
     inputs.agenix.nixosModules.default
 
+    # enable alternative cli
+    inputs.nixos-cli.nixosModules.nixos-cli
+
     # System
     ../common.nix
     ../arm-cross-compile.nix
@@ -264,6 +267,12 @@ in
   # programs.ssh.startAgent = true;
 
   programs.dconf.enable = true;
+
+  programs.nixos-cli = {
+    enable = true;
+    option-cache.enable = true;
+    settings = { };
+  };
 
   system.stateVersion = "25.11";
 }

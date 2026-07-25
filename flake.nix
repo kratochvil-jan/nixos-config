@@ -39,6 +39,8 @@
 
     git-hooks.url = "github:cachix/git-hooks.nix";
 
+    nixos-cli.url = "github:nix-community/nixos-cli";
+
     # temporary fix for freecad
     nixpkgs-freecad-good.url = "github:NixOS/nixpkgs/d407951447dcd00442e97087bf374aad70c04cea";
   };
