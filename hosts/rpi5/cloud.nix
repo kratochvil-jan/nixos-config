@@ -165,6 +165,7 @@ let
 in
 {
   age.secrets.cloudflare.file = ../../secrets/cloudflare.env.age;
+  age.secrets.silverbullet-env.file = ../../secrets/silverbullet.env.age;
 
   systemd.tmpfiles.rules = tmpfilesRules;
 
@@ -191,6 +192,7 @@ in
     listenPort = services.silverbullet.port;
     spaceDir = services.silverbullet.storage;
     extraArgs = [ "-L0.0.0.0" ];
+    envFile = config.age.secrets.silverbullet-env.path;
   };
 
   systemd.services.homepage-dashboard.environment = {

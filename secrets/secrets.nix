@@ -21,8 +21,6 @@ in
 
   "cloudflare.env.age".publicKeys = [
     systems.lap.jan.pub
-    systems.lap.system.pub
-    systems.rpi3.system.pub
     systems.rpi5.system.pub
   ];
 
@@ -40,5 +38,10 @@ in
     systems.lap.jan.pub
     systems.big.jan.pub
     systems.big.system.pub
+  ];
+
+  "silverbullet.env.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
   ];
 }
