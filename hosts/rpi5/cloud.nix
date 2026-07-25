@@ -101,6 +101,15 @@ let
       user = getUser "jellyfin";
       group = getGroup "jellyfin";
     };
+    paperless = {
+      port = 8097;
+      storage = "${dataDir}/paperless";
+      createFolder = true;
+      icon = "paperless.svg";
+      prefix = "paperless";
+      user = getUser "paperless";
+      group = getGroup "paperless";
+    };
   };
 
   # Convert the services config above into configuration for homepage-dashboard
@@ -166,6 +175,7 @@ in
 {
   age.secrets.cloudflare.file = ../../secrets/cloudflare.env.age;
   age.secrets.silverbullet-env.file = ../../secrets/silverbullet.env.age;
+  age.secrets.paperless-env.file = ../../secrets/paperless.env.age;
 
   systemd.tmpfiles.rules = tmpfilesRules;
 
@@ -382,6 +392,23 @@ in
     enable = true;
     # apparently jellyfin has discontinued hardware acceleration for rpi
     dataDir = services.jellyfin.storage;
+  };
+
+  services.paperless = {
+    enable = true;
+    settings = {
+      PAPERLESS_URL = "https://${services.paperless.prefix}.${domain}";
+      PAPERLESS_OCR_LANGUAGE = "ces+eng";
+      PAPERLESS_OCR_USER_ARGS = {
+        optimize = 1;
+        pdfa_image_compression = "lossless";
+      };
+    };
+    port = services.paperless.port;
+    dataDir = "${services.paperless.storage}/data";
+    mediaDir = "${services.paperless.storage}/media";
+    consumptionDir = "${services.paperless.storage}/consumption";
+    environmentFile = config.age.secrets.paperless-env.path;
   };
 
   networking.firewall = {

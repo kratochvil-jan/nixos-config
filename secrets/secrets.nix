@@ -44,4 +44,9 @@ in
     systems.lap.jan.pub
     systems.rpi5.system.pub
   ];
+
+  "paperless.env.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
+  ];
 }
