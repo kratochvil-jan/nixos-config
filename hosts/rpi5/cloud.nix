@@ -102,7 +102,7 @@ let
       group = getGroup "jellyfin";
     };
     paperless = {
-      port = 8097;
+      port = 8008;
       storage = "${dataDir}/paperless";
       createFolder = true;
       icon = "paperless.svg";
@@ -415,11 +415,9 @@ in
     allowedTCPPorts = [
       80
       443
-      services.jellyfin.port # https
     ];
     allowedUDPPorts = [
-      services.jellyfin.discoveryPort
-      services.jellyfin.dlnaPort
+      53
     ];
   };
 
