@@ -110,6 +110,15 @@ let
       user = getUser "paperless";
       group = getGroup "paperless";
     };
+    adguard = {
+      port = 8009;
+      storage = "${dataDir}/adguard";
+      createFolder = true;
+      icon = "adguard.svg";
+      prefix = "adguard";
+      user = getUser "adguard";
+      group = getGroup "adguard";
+    };
   };
 
   # Convert the services config above into configuration for homepage-dashboard
@@ -411,8 +420,49 @@ in
     environmentFile = config.age.secrets.paperless-env.path;
   };
 
+  # DHCP on the home network is providing DNS server pointing to the IP address of this device.
+  # Not part of the nixos configuration.
+  services.adguardhome = {
+    # NOTE: adguardhome is using private systemd folder,
+    # as long as it's all configured in nix i dont care enough to migrate
+    # the StateDirectory / RuntimeDirectory to `backed-services`.
+    enable = true;
+    host = "127.0.0.1";
+    port = services.adguard.port;
+    settings = {
+      dns = {
+        upstream_dns = [
+          "1.1.1.1"
+          "8.8.8.8"
+          "9.9.9.9"
+        ];
+      };
+      filtering = {
+        protection_enabled = true;
+        filtering_enabled = true;
+      };
+      # The following notation uses map
+      # to not have to manually create {enabled = true; url = "";} for every filter
+      # This is, however, fully optional
+      filters =
+        map
+          (url: {
+            enabled = true;
+            url = url;
+          })
+          [
+            "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_2_Base/filter.txt" # base list
+            "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_3_Spyware/filter.txt" # spyware
+            "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_4_Social/filter.txt" # like and tweet buttons on websites
+            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt" # The Big List of Hacked Malware Web Sites
+            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt" # malicious url blocklist
+          ];
+    };
+  };
+
   networking.firewall = {
     allowedTCPPorts = [
+      53
       80
       443
     ];

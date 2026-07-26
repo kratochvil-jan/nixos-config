@@ -75,6 +75,10 @@ in
   networking = {
     hostName = "rpi5";
     dhcpcd.enable = true; # do not use NetworkManager
+    dhcpcd.extraConfig = ''
+      nohook resolv.conf
+    '';
+    nameservers = [ "127.0.0.1" ]; # if the adguard DNS fails, it's cooked - no DNS
     wireless.enable = false;
     firewall.enable = true;
     nftables.enable = true;
