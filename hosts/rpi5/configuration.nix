@@ -13,11 +13,10 @@ let
   };
   overlay = final: prev: {
     silverbullet = latestPkgs.silverbullet;
-    # TODO
-    # immich = latestPkgs.immich;
-    # forgejo = latestPkgs.forgejo;
-    # jellyfin = latestPkgs.jellyfin;
-    # traefik = latestPkgs.traefik;
+    immich = latestPkgs.immich;
+    forgejo = latestPkgs.forgejo;
+    jellyfin = latestPkgs.jellyfin;
+    traefik = latestPkgs.traefik;
   };
 in
 {
