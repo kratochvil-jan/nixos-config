@@ -6,6 +6,5 @@ inputs.nixpkgs.lib.nixosSystem {
   modules = [
     ./configuration.nix
     ../../overlays/zjstatus.nix
-    ../../overlays/freecad.nix
   ];
 }
