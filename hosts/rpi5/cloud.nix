@@ -83,6 +83,7 @@ let
     };
     postgresql = {
       storage = "${dataDir}/postgresql/${config.services.postgresql.package.psqlSchema}";
+      storagePermission = 0700;
       createFolder = true;
       hideTraefik = true;
       hideHomepage = true;
@@ -173,7 +174,7 @@ let
         _: svc:
         if svc ? createFolder && svc.createFolder == true then
           [
-            "d '${svc.storage}' 0755 ${svc.user} ${svc.group} -"
+            "d '${svc.storage}' ${toString svc.storagePermission or "0755"} ${svc.user} ${svc.group} -"
           ]
         else
           [ ]
