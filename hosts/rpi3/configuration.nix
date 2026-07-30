@@ -18,7 +18,6 @@
   imports = [
     inputs.agenix.nixosModules.default
     ./bootable-sd.nix
-    ./cloud.nix
     ../../modules/base.nix
   ];
 

@@ -1,0 +1,1 @@
+"kratochvil-jan.eu"

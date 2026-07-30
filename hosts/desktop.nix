@@ -18,7 +18,7 @@
       "edibdbjcniadpccecjdfdjjppcpchdlm" # I still dont care about cookies
       "edllcgchknhokighleffpipdedmpgiln" # Google Search Maps Button
     ];
-    homepageLocation = "https://kratochvil-jan.eu";
+    homepageLocation = "https://${import ../modules/domain.nix}";
     enablePlasmaBrowserIntegration = true;
   };
 }
