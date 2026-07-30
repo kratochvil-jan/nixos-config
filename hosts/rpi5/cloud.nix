@@ -10,7 +10,7 @@ let
   getUser = name: config.systemd.services.${name}.serviceConfig.User or "root";
   getGroup = name: config.systemd.services.${name}.serviceConfig.Group or "root";
 
-  domain = import ../../modules/domain.nix;
+  domain = import ../domain.nix;
 
   dataDir = "/var/lib/backed-services";
 

@@ -5,7 +5,7 @@ inputs.nixpkgs.lib.nixosSystem {
   specialArgs = { inherit inputs; };
   modules = [
     ../hosts/rpi3/bootable-sd.nix
-    ../modules/base.nix
+    ../hosts/common.nix
     {
 
       networking.networkmanager.enable = true;

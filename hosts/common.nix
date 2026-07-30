@@ -27,7 +27,6 @@
   nixpkgs = {
     config = {
       allowUnfree = true; # Allow unfree packages system-wide
-      allowUnfreePredicate = (_: true); # Allow all unfree packages
     };
   };
 
@@ -48,8 +47,8 @@
   programs.nh = {
     enable = true;
     clean.enable = true;
-    clean.dates = "weekly";
-    clean.extraArgs = "--keep-since 4d --keep 3";
+    clean.dates = "daily";
+    clean.extraArgs = "--keep-since 7d --keep 5";
     # flake = ...; # ?
   };
 

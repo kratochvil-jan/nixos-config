@@ -41,9 +41,6 @@ in
 
     # Home Manager
     ../home-manager.nix
-
-    # ../../modules/home-cloud.nix
-    ../rpi3/cloud.nix
   ];
 
   age.secrets.lap-jan-pw.file = ../../secrets/hosts/lap/jan.pw.age;

@@ -18,7 +18,7 @@
       "edibdbjcniadpccecjdfdjjppcpchdlm" # I still dont care about cookies
       "edllcgchknhokighleffpipdedmpgiln" # Google Search Maps Button
     ];
-    homepageLocation = "https://${import ../modules/domain.nix}";
+    homepageLocation = "https://${import ./domain.nix}";
     enablePlasmaBrowserIntegration = true;
   };
 }

@@ -33,7 +33,6 @@ in
     inputs.agenix.nixosModules.default
 
     # System
-    ../../modules/base.nix
     ../common.nix
 
     # Users

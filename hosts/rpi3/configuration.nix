@@ -18,18 +18,12 @@
   imports = [
     inputs.agenix.nixosModules.default
     ./bootable-sd.nix
-    ../../modules/base.nix
+    ../common.nix
   ];
 
   users.users.root.openssh.authorizedKeys.keyFiles = [
     ../../secrets/hosts/lap/jan.pub
   ];
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 10d";
-  };
 
   networking.hostName = "rpi3";
   services.openssh.enable = true;
