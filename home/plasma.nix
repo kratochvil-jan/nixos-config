@@ -336,6 +336,18 @@ in
       kwin."Switch to Desktop 4" = "Meta+3";
       kwin."Switch to Desktop 5" = "Meta+4";
       kwin."Switch to Desktop 6" = "Meta+5";
+      kwin."Window to Desktop 1" = "Meta+~";
+      kwin."Window to Desktop 2" = "Meta+!";
+      kwin."Window to Desktop 3" = "Meta+@";
+      kwin."Window to Desktop 4" = "Meta+#";
+      kwin."Window to Desktop 5" = "Meta+$";
+      kwin."Window to Desktop 6" = "Meta+%";
+      kwin."Walk Through Windows Alternative" = "none";
+      kwin."Walk Through Windows Alternative (Reverse)" = "none";
+      kwin."Walk Through Windows of Current Application" = "none";
+      kwin."Walk Through Windows of Current Application (Reverse)" = "none";
+      kwin."Walk Through Windows of Current Application Alternative" = "none";
+      kwin."Walk Through Windows of Current Application Alternative (Reverse)" = "none";
 
       mediacontrol.mediavolumedown = [ ];
       mediacontrol.mediavolumeup = [ ];
