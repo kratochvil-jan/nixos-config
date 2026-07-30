@@ -1,15 +1,6 @@
 { inputs, pkgs, ... }:
 
 {
-
-  # Temporary to allow bitwarden-desktop.
-  # A fix on upstream bitwarden repo was already merged, to be released in July.
-  # https://github.com/NixOS/nixpkgs/issues/526914
-  # nixpkgs.config.permittedInsecurePackages = [
-  #   "electron-39.8.10"
-  # ];
-  # NOTE: I have decided to stop using bitwarden-desktop instead. I will rely on web.
-
   # Desktop environment
 
   services.displayManager.plasma-login-manager.enable = true;
