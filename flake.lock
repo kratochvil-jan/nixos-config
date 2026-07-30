@@ -611,11 +611,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1778869580,
-        "narHash": "sha256-AfA09hqZAYREpf3vtDDFQvpsWljZXNFSZfG8/ssZWhI=",
+        "lastModified": 1785429465,
+        "narHash": "sha256-a3Wz1GNSy8TCIeZkeUxmpupSTWcM26YcBg58Iz+bXPc=",
         "owner": "kratochvil-jan",
         "repo": "nixvim",
-        "rev": "c08a4fc9eaf6e9638d9efffbe197b8e4c4d1a99b",
+        "rev": "32a744b48e8c710c3ea6da11c94435eabefac1b7",
         "type": "github"
       },
       "original": {
