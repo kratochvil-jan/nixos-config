@@ -3,6 +3,7 @@
   inputs,
   pkgs,
   lib,
+  latestPkgs,
   ...
 }:
 
@@ -472,4 +473,18 @@ in
     ];
   };
 
+  nixpkgs.overlays = [
+    (final: prev: {
+      traefik = latestPkgs.traefik;
+      silverbullet = latestPkgs.silverbullet;
+      homepage = latestPkgs.homepage;
+      forgejo = latestPkgs.forgejo;
+      vaultwarden = latestPkgs.vaultwarden;
+      immich = latestPkgs.immich;
+      postgresql = latestPkgs.postgresql;
+      jellyfin = latestPkgs.jellyfin;
+      paperless = latestPkgs.paperless;
+      adguard = latestPkgs.adguard;
+    })
+  ];
 }

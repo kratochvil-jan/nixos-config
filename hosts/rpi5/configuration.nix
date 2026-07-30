@@ -11,13 +11,6 @@ let
   latestPkgs = import inputs.nixpkgs {
     inherit system;
   };
-  overlay = final: prev: {
-    silverbullet = latestPkgs.silverbullet;
-    immich = latestPkgs.immich;
-    forgejo = latestPkgs.forgejo;
-    jellyfin = latestPkgs.jellyfin;
-    traefik = latestPkgs.traefik;
-  };
 in
 {
   imports = [
@@ -42,8 +35,6 @@ in
 
     ./cloud.nix
   ];
-
-  nixpkgs.overlays = [ overlay ];
 
   # Nix
   nix.settings.trusted-users = [
