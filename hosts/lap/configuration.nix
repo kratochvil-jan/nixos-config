@@ -192,10 +192,10 @@ in
 
   # Virtualisation
 
-  # virtualisation.libvirtd.enable = true;
-  # virtualisation.spiceUSBRedirection.enable = true;
-  # TODO win10 VM for device updates
-  # programs.virt-manager.enable = true;
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+  programs.virt-manager.enable = true;
+  networking.firewall.trustedInterfaces = [ "virbr0" ];
 
   # Graphics
   hardware.graphics = {

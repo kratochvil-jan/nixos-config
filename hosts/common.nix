@@ -63,6 +63,7 @@
   environment.shells = with pkgs; [ zsh ];
 
   environment.systemPackages = with pkgs; [
+    inputs.agenix.packages.${system}.default
     wget
     curl
     dig
@@ -71,7 +72,8 @@
     wl-clipboard
     sshfs
     inetutils # telnet
-    inputs.agenix.packages.${system}.default
+    lsof
+    usbutils
   ];
 
   programs.nix-ld = {
