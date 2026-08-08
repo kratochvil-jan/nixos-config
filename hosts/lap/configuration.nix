@@ -26,6 +26,7 @@ in
 
     # System
     ../common.nix
+    ../ssh.nix
     ../arm-cross-compile.nix
     ../desktop.nix
 
@@ -222,10 +223,6 @@ in
       };
     };
   };
-
-  # SSH
-
-  services.openssh.enable = true;
 
   # Services
 

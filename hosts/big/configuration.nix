@@ -26,6 +26,7 @@ in
 
     # System
     ../common.nix
+    ../ssh.nix
     ../desktop.nix
 
     # Users

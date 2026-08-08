@@ -20,6 +20,7 @@
 
     # System
     ../common.nix
+    ../ssh.nix
 
     # Users
     ../users/root.nix
@@ -69,9 +70,6 @@
   hardware.graphics.enable = false;
   services.pipewire.enable = false;
   services.pulseaudio.enable = false;
-
-  # Services
-  services.openssh.enable = true;
 
   system.stateVersion = "26.05";
 }

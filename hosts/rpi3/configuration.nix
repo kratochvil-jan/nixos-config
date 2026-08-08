@@ -19,6 +19,7 @@
     inputs.agenix.nixosModules.default
     ./bootable-sd.nix
     ../common.nix
+    ../ssh.nix
   ];
 
   users.users.root.openssh.authorizedKeys.keyFiles = [
@@ -26,7 +27,6 @@
   ];
 
   networking.hostName = "rpi3";
-  services.openssh.enable = true;
   services.resolved.enable = true;
   networking.firewall.enable = true;
   networking.nftables.enable = true;
