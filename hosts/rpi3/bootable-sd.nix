@@ -27,7 +27,7 @@
     vim
     wget
     htop
-    ncdu
+    gdu
     ripgrep
   ];
 

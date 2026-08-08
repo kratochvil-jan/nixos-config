@@ -21,4 +21,8 @@
     homepageLocation = "https://${import ./domain.nix}";
     enablePlasmaBrowserIntegration = true;
   };
+
+  environment.systemPackages = with pkgs; [
+    wl-clipboard
+  ];
 }

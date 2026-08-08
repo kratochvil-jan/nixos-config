@@ -4,7 +4,8 @@
   imports = [
     # Hardware
     inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.base
-    inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
+    # this causes a TON of rebuilds, dont use it
+    # inputs.nixos-raspberrypi.nixosModules.raspberry-pi-5.page-size-16k
   ];
   # Bootloader
 

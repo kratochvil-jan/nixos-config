@@ -110,7 +110,7 @@
     vim
     wget
     htop
-    ncdu
+    gdu
     ripgrep
     dtc
     inputs.agenix.packages.${system}.default

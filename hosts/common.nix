@@ -63,17 +63,23 @@
   environment.shells = with pkgs; [ zsh ];
 
   environment.systemPackages = with pkgs; [
-    inputs.agenix.packages.${system}.default
-    wget
+    # keep-sorted start
     curl
     dig
-    tcpdump
-    tshark
-    wl-clipboard
-    sshfs
+    fd
+    file
+    gdu # ncdu replacement
+    htop
     inetutils # telnet
+    inputs.agenix.packages.${system}.default
+    jq
+    killall
     lsof
+    sshfs
+    tcpdump
     usbutils
+    wget
+    # keep-sorted end
   ];
 
   programs.nix-ld = {

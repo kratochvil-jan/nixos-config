@@ -26,6 +26,7 @@
 
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
+    agenix.inputs.home-manager.follows = "home-manager";
 
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
 
@@ -33,6 +34,7 @@
 
     plasma-manager.url = "github:nix-community/plasma-manager";
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
+    plasma-manager.inputs.home-manager.follows = "home-manager";
 
     zjstatus.url = "github:dj95/zjstatus";
     zjstatus.inputs.nixpkgs.follows = "nixpkgs";
@@ -49,12 +51,10 @@
       nixos-hardware,
       home-manager,
       disko,
-      agenix,
       nixos-raspberrypi,
       nixvim,
       plasma-manager,
       zjstatus,
-      systems,
       git-hooks,
       ...
     }@inputs:

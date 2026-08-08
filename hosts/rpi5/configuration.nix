@@ -6,12 +6,6 @@
   latestPkgs, # nixpkgs
   ...
 }:
-let
-  system = "aarch64-linux";
-  latestPkgs = import inputs.nixpkgs {
-    inherit system;
-  };
-in
 {
   imports = [
     inputs.disko.nixosModules.disko
@@ -56,9 +50,6 @@ in
   virtualisation.docker.storageDriver = "btrfs";
   virtualisation.docker.daemon.settings.experimental = true;
 
-  # Peripherals
-  hardware.bluetooth.enable = false;
-
   # Networking
 
   networking = {
@@ -73,15 +64,14 @@ in
     nftables.enable = true;
   };
 
-  # Audio
-  services.pipewire.enable = true;
-  services.pulseaudio.enable = true;
-
-  # Graphics
-  hardware.graphics.enable = true;
+  # Disable unnecessary
+  hardware.bluetooth.enable = false;
+  hardware.graphics.enable = false;
+  services.pipewire.enable = false;
+  services.pulseaudio.enable = false;
 
   # Services
   services.openssh.enable = true;
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
