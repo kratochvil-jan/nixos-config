@@ -71,7 +71,7 @@
       # is this overlay even used anywhere?
       overlays = [
         (final: prev: {
-          zjstatus = zjstatus.packages.${prev.system}.default;
+          zjstatus = zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
         })
       ];
 
@@ -151,13 +151,14 @@
           default = pkgs.mkShell {
             name = "nixos-config";
             inherit shellHook; # this installs the hooks automatically on `nix develop`
-            nativeBuildInputs = with pkgs; [
-              # keep-sorted start
+            nativeBuildInputs =
               enabledPackages # the enabled hooks from `checks`
-              gitleaks
-              nix-output-monitor # `nom`
-              # keep-sorted end
-            ];
+              ++ (with pkgs; [
+                # keep-sorted start
+                gitleaks
+                nix-output-monitor # `nom`
+                # keep-sorted end
+              ]);
           };
         }
       );

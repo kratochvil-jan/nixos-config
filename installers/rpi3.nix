@@ -7,6 +7,7 @@ inputs.nixpkgs.lib.nixosSystem {
     ../hosts/rpi3/bootable-sd.nix
     ../hosts/common.nix
     {
+      boot.zfs.forceImportRoot = false;
 
       networking.networkmanager.enable = true;
       networking.hostName = "rpi3-live";
@@ -16,6 +17,8 @@ inputs.nixpkgs.lib.nixosSystem {
 
       users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/jan.pub ];
       users.users.root.initialPassword = "changeme";
+
+      system.stateVersion = "26.05";
     }
   ];
 }

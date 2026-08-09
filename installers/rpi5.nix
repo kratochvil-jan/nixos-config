@@ -11,6 +11,7 @@ inputs.nixos-raspberrypi.lib.nixosInstaller {
     raspberry-pi-5.page-size-16k
     {
       boot.loader.raspberry-pi.bootloader = "kernel";
+      boot.zfs.forceImportRoot = false;
       # boot.tmp.useTmpfs = true;
       users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/jan.pub ];
 
@@ -32,6 +33,8 @@ inputs.nixos-raspberrypi.lib.nixosInstaller {
           };
         };
       };
+
+      system.stateVersion = "26.05";
     }
   ];
 }

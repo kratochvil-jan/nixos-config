@@ -13,6 +13,7 @@ inputs.nixos-raspberrypi.lib.nixosInstaller {
     (
       { pkgs, ... }:
       {
+        boot.zfs.forceImportRoot = false;
         boot.kernelParams = pkgs.lib.mkForce [
           "console=ttyS0,115200"
           "nohibernate"
@@ -25,6 +26,8 @@ inputs.nixos-raspberrypi.lib.nixosInstaller {
         boot.loader.systemd-boot.enable = false;
         boot.loader.efi.canTouchEfiVariables = true;
         users.users.root.openssh.authorizedKeys.keyFiles = [ ../secrets/hosts/lap/jan.pub ];
+
+        system.stateVersion = "26.05";
       }
     )
   ];

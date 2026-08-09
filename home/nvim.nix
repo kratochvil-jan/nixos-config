@@ -6,9 +6,9 @@
 {
   home.packages = [
     pkgs.wl-clipboard
-    inputs.nixvim.packages.${pkgs.system}.default
+    inputs.nixvim.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "nv" ''
-      exec ${inputs.nixvim.packages.${pkgs.system}.default}/bin/nvim "$@"
+      exec ${inputs.nixvim.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/nvim "$@"
     '')
   ];
   programs.neovim = {

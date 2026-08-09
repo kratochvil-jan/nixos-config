@@ -13,6 +13,7 @@
   ];
 
   boot.supportedFilesystems.zfs = lib.mkForce false;
+  boot.zfs.forceImportRoot = false;
   sdImage.compressImage = false;
 
   # This configuration can also be flashed to a USB flash stick,

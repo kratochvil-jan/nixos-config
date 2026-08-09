@@ -60,6 +60,7 @@ in
 
   # Bootloader
 
+  boot.zfs.forceImportRoot = false;
   boot = {
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;

@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -20,6 +25,8 @@
   # boot.loader.raspberry-pi.bootloader = "uboot";
   # boot.loader.systemd-boot.enable = false;
   # boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.zfs.forceImportRoot = false;
   environment.systemPackages = [
     pkgs.dracut # for lsinitrd
   ];
