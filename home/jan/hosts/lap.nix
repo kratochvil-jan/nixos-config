@@ -22,10 +22,8 @@
     };
 
     home.packages = with pkgs; [
-      tio
       freecad
       prusa-slicer
-      # bitwarden-desktop
     ];
 
     home.stateVersion = "25.11";

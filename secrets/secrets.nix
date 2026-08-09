@@ -40,6 +40,11 @@ in
     systems.big.system.pub
   ];
 
+  "hosts/rpi5/jan.pw.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
+  ];
+
   "silverbullet.env.age".publicKeys = [
     systems.lap.jan.pub
     systems.rpi5.system.pub

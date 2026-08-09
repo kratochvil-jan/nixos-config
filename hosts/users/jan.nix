@@ -33,8 +33,6 @@ in
       shell = pkgs.zsh;
       uid = 1000;
       initialPassword = "changeme";
-      # TODO openssh.authorizedKeys.keys = [];
-
       # each system with this user should set
       # "hashedPasswordFile" to an agenix secret
     };

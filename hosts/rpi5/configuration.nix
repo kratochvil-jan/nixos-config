@@ -24,6 +24,8 @@
 
     # Users
     ../users/root.nix
+    ../users/jan.nix
+    ../../home/jan/hosts/rpi5.nix
 
     # Home Manager
     ../home-manager.nix
@@ -31,20 +33,25 @@
     ./cloud.nix
   ];
 
-  # Nix
-  nix.settings.trusted-users = [
-    "root"
-    "jan"
-    "wheel"
-  ];
+  age.secrets.rpi5-jan-pw.file = ../../secrets/hosts/rpi5/jan.pw.age;
 
   # Users
   users.mutableUsers = false;
 
-  users.users.root.openssh.authorizedKeys.keyFiles = [
-    ../../secrets/hosts/lap/jan.pub
-  ];
-  users.users.root.password = null;
+  users.users.root = {
+    openssh.authorizedKeys.keyFiles = [
+      ../../secrets/hosts/lap/jan.pub
+    ];
+    password = null;
+  };
+
+  users.users.jan = {
+    initialPassword = lib.mkForce null;
+    hashedPasswordFile = config.age.secrets.rpi5-jan-pw.path;
+    openssh.authorizedKeys.keyFiles = [
+      ../../secrets/hosts/lap/jan.pub
+    ];
+  };
 
   # Virtualisation
   virtualisation.docker.enable = true;

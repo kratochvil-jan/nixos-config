@@ -11,12 +11,6 @@
     ./zsh.nix
   ];
 
-  home = {
-    username = "jan";
-    homeDirectory = "/home/jan";
-    stateVersion = lib.mkDefault "25.11";
-  };
-
   programs.navi = {
     enable = true;
     enableZshIntegration = true;
@@ -31,8 +25,7 @@
     settings = {
       user = {
         name = "Jan Kratochvil";
-        # TODO encrypt me
-        email = "imnottellingyou";
+        email = "jan.kratochvil.94@gmail.com";
       };
       merge.conflictstyle = "zdiff3";
     };
@@ -81,19 +74,14 @@
     enableZshIntegration = true;
   };
 
-  home.packages = with pkgs; [
-    duf
-    fd
-    file
-    ncdu
-    dig
-    python3
-    htop
-    btop
-    just
-    prek
-    killall
-  ];
-
   programs.home-manager.enable = true;
+
+  home.shell = {
+    enableBashIntegration = true;
+    enableFishIntegration = false;
+    enableIonIntegration = false;
+    enableNushellIntegration = false;
+    enableShellIntegration = false;
+    enableZshIntegration = true;
+  };
 }

@@ -132,12 +132,12 @@ keybinds clear-defaults=true { // will clear all default keybinds
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
 	bind "Alt m" {
-		Run "ssh" "-t" "root@10.0.10.13" {
+		Run "ssh" "-t" "jan@10.0.10.13" {
 			direction "Right"
 		}
 	}
 	bind "Alt Shift m" {
-		Run "ssh" "-t" "root@10.0.10.13" {
+		Run "ssh" "-t" "jan@10.0.10.13" {
 			direction "Down";
 		}
 	}

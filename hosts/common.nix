@@ -30,6 +30,10 @@
     };
   };
 
+  nixpkgs.overlays = [
+    inputs.agenix.overlays.default
+  ];
+
   nix = {
     # Garbage collection was moved to the `nh` wrapper
     # Nix settings
@@ -55,8 +59,9 @@
   # Programs
   programs.zsh.enable = true;
   programs.nano.enable = true;
-  programs.neovim.enable = true;
-  programs.neovim.defaultEditor = true;
+  # TODO
+  # programs.neovim.enable = true;
+  # programs.neovim.defaultEditor = true;
 
   # for zsh completions
   environment.pathsToLink = [ "/share/zsh" ];
@@ -64,17 +69,23 @@
 
   environment.systemPackages = with pkgs; [
     # keep-sorted start
+    agenix
+    btop
     curl
     dig
+    duf
     fd
     file
     gdu # ncdu replacement
     htop
     inetutils # telnet
-    inputs.agenix.packages.${system}.default
     jq
+    just
     killall
     lsof
+    ncdu
+    prek
+    python3
     sshfs
     tcpdump
     usbutils

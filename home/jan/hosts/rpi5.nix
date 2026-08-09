@@ -6,16 +6,12 @@
   ...
 }:
 {
-  imports = [ ../default.nix ];
   home-manager.users.jan = {
     imports = [
+      ../default.nix
       ../../common.nix
     ];
 
-    home.packages = with pkgs; [
-      tio
-    ];
-
-    home.stateVersion = "25.11";
+    home.stateVersion = "26.05";
   };
 }
