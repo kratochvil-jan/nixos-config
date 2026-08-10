@@ -14,6 +14,8 @@ let
   };
 in
 {
+  # hash user passwords via `mkpasswd`
+
   "wifi.env.age".publicKeys = [
     systems.lap.jan.pub
     systems.rpi3.system.pub
