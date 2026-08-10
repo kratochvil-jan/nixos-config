@@ -53,6 +53,8 @@
     ];
   };
 
+  systemd.oomd.enable = true;
+
   # Virtualisation
   virtualisation.docker.enable = true;
   virtualisation.docker.storageDriver = "btrfs";
