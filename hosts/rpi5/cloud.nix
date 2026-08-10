@@ -121,6 +121,11 @@ let
       user = getUser "adguard";
       group = getGroup "adguard";
     };
+    nix-serve = {
+      port = 8010;
+      prefix = "cache";
+      hideHomepage = true;
+    };
   };
 
   # Convert the services config above into configuration for homepage-dashboard
@@ -334,6 +339,10 @@ in
         email = "postmaster@${domain}"; # dummy mail
         storage = "${services.traefik.storage}/acme.json";
         dnschallenge.provider = "cloudflare";
+        dnschallenge.resolvers = [
+          "1.1.1.1:53"
+          "8.8.8.8:53"
+        ];
       };
 
       api.dashboard = true;
@@ -460,6 +469,12 @@ in
             "https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt" # malicious url blocklist
           ];
     };
+  };
+
+  services.nix-serve = {
+    enable = true;
+    secretKeyFile = config.age.secrets.nix-store-key.path;
+    port = services.nix-serve.port;
   };
 
   networking.firewall = {

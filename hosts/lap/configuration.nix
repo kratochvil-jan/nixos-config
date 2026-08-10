@@ -268,5 +268,21 @@ in
     settings = { };
   };
 
+  nix.settings = {
+    extra-substituters = [
+      "https://cache.${import ../../hosts/domain.nix}"
+    ];
+
+    extra-trusted-public-keys = [
+      "cache.kratochvil-jan.eu-1:VW5dscAhQ5nStfjqgjx3u0bcEYCHZADQCG6cgz1DnNc="
+    ];
+
+    # builders = [
+    #   "ssh-ng://root@10.0.10.13 aarch64-linux - 4 1"
+    # ];
+
+    max-jobs = 0;
+  };
+
   system.stateVersion = "25.11";
 }

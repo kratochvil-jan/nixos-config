@@ -34,6 +34,7 @@
   ];
 
   age.secrets.rpi5-jan-pw.file = ../../secrets/hosts/rpi5/jan.pw.age;
+  age.secrets.nix-store-key.file = ../../secrets/nix-store-key.age;
 
   # Users
   users.mutableUsers = false;

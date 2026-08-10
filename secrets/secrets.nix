@@ -26,6 +26,11 @@ in
     systems.rpi5.system.pub
   ];
 
+  "nix-store-key.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
+  ];
+
   "hosts/lap/jan.pw.age".publicKeys = [
     systems.lap.jan.pub
     systems.lap.system.pub
