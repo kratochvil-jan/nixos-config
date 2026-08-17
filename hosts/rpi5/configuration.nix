@@ -51,6 +51,7 @@
     hashedPasswordFile = config.age.secrets.rpi5-jan-pw.path;
     openssh.authorizedKeys.keyFiles = [
       ../../secrets/hosts/lap/jan.pub
+      ../../secrets/hosts/phone/key.pub
     ];
   };
 
