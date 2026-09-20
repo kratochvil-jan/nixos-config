@@ -139,6 +139,8 @@
               };
             package = pkgs.prek;
           };
+
+          btrfs-raid = import ./hosts/rpi5/tests/test_btrfs.nix { inherit inputs pkgs; };
         }
       );
 
@@ -171,6 +173,31 @@
         in
         {
           esphome-power-strip = esphome.power-strip;
+          test = pkgs.testers.runNixOSTest {
+            name = "minimal-test";
+
+            nodes.machine =
+              { config, pkgs, ... }:
+              {
+
+                users.users.alice = {
+                  isNormalUser = true;
+                  extraGroups = [ "wheel" ];
+                  packages = with pkgs; [
+                    firefox
+                    tree
+                  ];
+                };
+
+                system.stateVersion = "23.11";
+              };
+
+            testScript = ''
+              machine.wait_for_unit("default.target")
+              machine.succeed("su -- alice -c 'which firefox'")
+              machine.fail("su -- root -c 'which firefox'")
+            '';
+          };
         }
       );
 

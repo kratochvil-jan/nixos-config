@@ -11,7 +11,8 @@
     inputs.disko.nixosModules.disko
     # bootloader on SD card
     # rootfs on SSD with btrfs
-    ./sd-pcie-btrfs.nix
+    # BTRFS RAID1 across multiple disks
+    ./disk-config.nix
 
     # HW specific configs for rpi5
     ./hw.nix

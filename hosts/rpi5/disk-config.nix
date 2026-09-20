@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, ... }:
 
 # bootloader on SD card
 # rootfs on SSD with btrfs
@@ -50,6 +50,10 @@ let
     };
   };
 
+  raid-devices = [
+    "/dev/disk/by-id/ata-WDC_WD1004FBYZ-01YCBB1_WD-WMC6M0D0Z1HY"
+    "/dev/disk/by-id/ata-ST1000DM003-1CH162_Z1DB6ZE1"
+  ];
 in
 {
   disko.devices = {
@@ -127,6 +131,9 @@ in
           };
         };
       }; # main
+      raid = import ./raid1.nix {
+        inherit lib raid-devices;
+      };
     };
   };
 }

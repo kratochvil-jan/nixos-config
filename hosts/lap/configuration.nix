@@ -126,7 +126,7 @@ in
 
   networking = {
     hostName = "lap";
-    usePredictableInterfaceNames = true;
+    usePredictableInterfaceNames = lib.mkDefault true;
     networkmanager.enable = true;
     firewall.enable = true;
     nftables.enable = true;
