@@ -61,4 +61,8 @@ in
     systems.lap.jan.pub
     systems.rpi5.system.pub
   ];
+
+  "esphome/power-strip-secrets.yaml.age".publicKeys = [
+    systems.lap.jan.pub
+  ];
 }

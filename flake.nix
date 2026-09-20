@@ -73,6 +73,7 @@
         (final: prev: {
           zjstatus = zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
         })
+        inputs.agenix.overlays.default
       ];
 
       mkPkgs =
@@ -151,15 +152,25 @@
           default = pkgs.mkShell {
             name = "nixos-config";
             inherit shellHook; # this installs the hooks automatically on `nix develop`
-            nativeBuildInputs =
-              enabledPackages # the enabled hooks from `checks`
-              ++ (with pkgs; [
-                # keep-sorted start
-                gitleaks
-                nix-output-monitor # `nom`
-                # keep-sorted end
-              ]);
+            nativeBuildInputs = enabledPackages; # the enabled hooks from `checks`
+            packages = with pkgs; [
+              # keep-sorted start
+              gitleaks
+              nix-output-monitor # `nom`
+              # keep-sorted end
+            ];
           };
+        }
+      );
+
+      packages = forEachSystem (
+        system:
+        let
+          pkgs = mkPkgs system;
+          esphome = pkgs.callPackage ./esphome/default.nix { };
+        in
+        {
+          esphome-power-strip = esphome.power-strip;
         }
       );
 
