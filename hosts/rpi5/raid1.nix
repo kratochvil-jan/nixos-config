@@ -21,7 +21,16 @@ assert builtins.isList raid-devices;
     ++ lib.tail raid-devices;
     subvolumes = {
       "@data" = {
-        mountpoint = "/mnt/raid/data";
+        mountpoint = "/storage/raid/data";
+      };
+      "@media" = {
+        mountpoint = "/storage/raid/media";
+      };
+      "@snapshots-services" = {
+        mountpoint = "/storage/raid/snapshots-services";
+      };
+      "@snapshots-lap" = {
+        mountpoint = "/storage/raid/snapshots-lap";
       };
     };
   };

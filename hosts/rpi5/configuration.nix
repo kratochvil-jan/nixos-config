@@ -32,6 +32,9 @@
     ../home-manager.nix
 
     ./cloud.nix
+
+    # Snapshot backups
+    ./btrbk.nix
   ];
 
   age.secrets.rpi5-jan-pw.file = ../../secrets/hosts/rpi5/jan.pw.age;
