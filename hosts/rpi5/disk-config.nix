@@ -51,8 +51,9 @@ let
   };
 
   raid-devices = [
-    "/dev/disk/by-id/ata-WDC_WD1004FBYZ-01YCBB1_WD-WMC6M0D0Z1HY"
-    "/dev/disk/by-id/ata-ST1000DM003-1CH162_Z1DB6ZE1"
+    "/dev/disk/by-id/ata-WDC_WD1004FBYZ-01YCBB1_WD-WMC6M0D0Z1HY" # 1TB https://www.disctech.com/Western-Digital-WD-Re-WD1004FBYZ-1TB-SATA-Hard-Disk-Drive
+    "/dev/disk/by-id/ata-ST1000DM003-1CH162_Z1DB6ZE1" # 1TB
+    "/dev/disk/by-id/ata-ST1000DM003-1CH162_Z1DB5ZCS" # 1TB
   ];
 in
 {
