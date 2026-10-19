@@ -8,6 +8,8 @@
 }:
 
 let
+  raid = "/storage/raid/";
+  media = "${raid}/media";
   getUser = name: config.systemd.services.${name}.serviceConfig.User or "root";
   getGroup = name: config.systemd.services.${name}.serviceConfig.Group or "root";
 
@@ -173,6 +175,8 @@ let
   # systemd tmpfiles rules to create respective service directories
   tmpfilesRules = [
     "d '${dataDir}' 0755 root root -"
+    "d '${media}/movies' 0755 jellyfin jellyfin -"
+    "d '${media}/shows' 0755 jellyfin jellyfin -"
   ]
   ++ builtins.concatLists (
     builtins.attrValues (
