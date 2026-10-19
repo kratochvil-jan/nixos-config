@@ -206,7 +206,6 @@
       # some custom alias flake outputs
       systems = {
         lap = self.nixosConfigurations.lap.config.system.build.toplevel;
-        lapTest = self.nixosConfigurations.lapTest.config.system.build.toplevel;
         big = self.nixosConfigurations.big.config.system.build.toplevel;
         rpi5 = self.nixosConfigurations.rpi5.config.system.build.toplevel;
         rpi3 = self.nixosConfigurations.rpi3.config.system.build.toplevel;
