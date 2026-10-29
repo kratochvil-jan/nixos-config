@@ -202,6 +202,7 @@
         "rpi3" = import ./hosts/rpi3 { inherit inputs; };
         "rpi5" = import ./hosts/rpi5 { inherit inputs; };
         "baksrvr" = import ./hosts/baksrvr { inherit inputs; };
+        "rpi5-og" = import ./hosts/rpi5og { inherit inputs; };
 
         # Installer systems. Only defined so we can use the *.sdImage derivation
         "live-rpi3" = import ./installers/rpi3.nix { inherit inputs; };
