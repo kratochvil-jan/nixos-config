@@ -11,6 +11,7 @@ let
     };
     rpi3.system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoJkx6klrM5N3aJ3Mb7fdtjqb2BsMuN0P4xrgqpxeVm";
     rpi5.system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHmzDV4TUM+HPHCicxrpQU8BkLkUweqjGbDa2qNssSq";
+    baksrvr.system.pub = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJuukOfuNl40RCHGtX8RzP4foD+Bx8yZECY3gBhsDJPV";
   };
 in
 {
@@ -50,6 +51,11 @@ in
   "hosts/rpi5/jan.pw.age".publicKeys = [
     systems.lap.jan.pub
     systems.rpi5.system.pub
+  ];
+
+  "hosts/baksrvr/jan.pw.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.baksrvr.system.pub
   ];
 
   "silverbullet.env.age".publicKeys = [

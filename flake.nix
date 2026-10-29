@@ -184,6 +184,7 @@
         big = self.nixosConfigurations.big.config.system.build.toplevel;
         rpi5 = self.nixosConfigurations.rpi5.config.system.build.toplevel;
         rpi3 = self.nixosConfigurations.rpi3.config.system.build.toplevel;
+        baksrvr = self.nixosConfigurations.server-lap.config.system.build.toplevel;
       };
       # installer images for provisioning RPI devices
       sdImages = {
@@ -196,6 +197,7 @@
         "lap" = import ./hosts/lap { inherit inputs; };
         "rpi3" = import ./hosts/rpi3 { inherit inputs; };
         "rpi5" = import ./hosts/rpi5 { inherit inputs; };
+        "baksrvr" = import ./hosts/baksrvr { inherit inputs; };
 
         # Installer systems. Only defined so we can use the *.sdImage derivation
         "live-rpi3" = import ./installers/rpi3.nix { inherit inputs; };
