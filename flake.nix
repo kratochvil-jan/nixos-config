@@ -191,8 +191,12 @@
         rpi5 = self.nixosConfigurations.live-rpi5.config.system.build.sdImage;
         rpi3 = self.nixosConfigurations.live-rpi3.config.system.build.sdImage;
       };
+      isoInstallers = {
+        x86 = self.nixosConfigurations.installer-x86.config.system.build.isoImage;
+      };
 
       nixosConfigurations = {
+        "installer-x86" = import ./hosts/installer/x86.nix { inherit inputs; };
         "big" = import ./hosts/big { inherit inputs; };
         "lap" = import ./hosts/lap { inherit inputs; };
         "rpi3" = import ./hosts/rpi3 { inherit inputs; };
