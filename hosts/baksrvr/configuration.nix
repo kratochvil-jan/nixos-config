@@ -74,8 +74,30 @@
 
   systemd.oomd.enable = true;
 
-  powerManagement.enable = true;
-  powerManagement.powertop.enable = true;
+  services.thermald.enable = true;
+
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "power";
+
+      # Allow PCI devices to suspend when idle
+      RUNTIME_PM_ON_AC = "auto";
+
+      SATA_LINKPWR_ON_AC = "med_power_with_dipm";
+
+      USB_AUTOSUSPEND = 1;
+
+      CPU_MIN_PERF_ON_AC = 0;
+      CPU_MAX_PERF_ON_AC = 50;
+    };
+  };
+
+  networking.wireless.enable = false;
+  boot.blacklistedKernelModules = [
+    "iwlwifi"
+  ];
 
   services.logind.settings.Login = {
     HandleLidSwitch = "ignore";
@@ -84,6 +106,7 @@
   };
 
   hardware.bluetooth.enable = false;
+  hardware.nvidiaOptimus.disable = true;
 
   services.fstrim.enable = true;
   # `btrfs scrub status /`
