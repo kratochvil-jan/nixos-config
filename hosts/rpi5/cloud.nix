@@ -128,6 +128,24 @@ let
       prefix = "cache";
       hideHomepage = true;
     };
+    grafana = {
+      port = 8011;
+      storage = "${dataDir}/grafana";
+      createFolder = true;
+      icon = "grafana.svg";
+      prefix = "grafana";
+      user = getUser "grafana";
+      group = getGroup "grafana";
+    };
+    prometheus = {
+      port = 8012;
+      storage = "${dataDir}/prometheus2";
+      createFolder = true;
+      icon = "prometheus.svg";
+      prefix = "prometheus";
+      user = getUser "prometheus";
+      group = getGroup "prometheus";
+    };
   };
 
   # Convert the services config above into configuration for homepage-dashboard
@@ -193,9 +211,16 @@ let
   );
 in
 {
-  age.secrets.cloudflare.file = ../../secrets/cloudflare.env.age;
-  age.secrets.silverbullet-env.file = ../../secrets/silverbullet.env.age;
-  age.secrets.paperless-env.file = ../../secrets/paperless.env.age;
+  age.secrets = {
+    cloudflare.file = ../../secrets/cloudflare.env.age;
+    silverbullet-env.file = ../../secrets/silverbullet.env.age;
+    paperless-env.file = ../../secrets/paperless.env.age;
+    grafana-key = {
+      file = ../../secrets/grafana.key.age;
+      owner = services.grafana.user;
+      group = services.grafana.group;
+    };
+  };
 
   systemd.tmpfiles.rules = tmpfilesRules;
 
@@ -479,6 +504,57 @@ in
     enable = true;
     secretKeyFile = config.age.secrets.nix-store-key.path;
     port = services.nix-serve.port;
+  };
+
+  services.grafana = {
+    enable = true;
+    dataDir = services.grafana.storage;
+    settings = {
+      server = {
+        http_addr = "127.0.0.1";
+        http_port = services.grafana.port;
+        enforce_domain = true;
+        enable_gzip = true;
+        domain = "grafana.${domain}";
+      };
+      security.secret_key = "$__file{${config.age.secrets.grafana-key.path}}";
+    };
+    provision = {
+      datasources.settings.datasources = [
+        {
+          name = "Prometheus";
+          type = "prometheus";
+          url = "http://${config.services.prometheus.listenAddress}:${toString config.services.prometheus.port}";
+          isDefault = true;
+          editable = false;
+        }
+      ];
+    };
+  };
+
+  services.prometheus = {
+    enable = true;
+    port = services.prometheus.port;
+    stateDir = services.prometheus.storage;
+    exporters.node = {
+      enable = true;
+      enabledCollectors = [
+        "systemd"
+        "processes"
+      ];
+    };
+    scrapeConfigs = [
+      {
+        job_name = "node";
+        static_configs = [
+          {
+            targets = [
+              "localhost:${toString config.services.prometheus.exporters.node.port}"
+            ];
+          }
+        ];
+      }
+    ];
   };
 
   networking.firewall = {

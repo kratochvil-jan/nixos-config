@@ -27,6 +27,21 @@ in
     systems.rpi5.system.pub
   ];
 
+  "silverbullet.env.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
+  ];
+
+  "paperless.env.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
+  ];
+
+  "grafana.key.age".publicKeys = [
+    systems.lap.jan.pub
+    systems.rpi5.system.pub
+  ];
+
   "nix-store-key.age".publicKeys = [
     systems.lap.jan.pub
     systems.rpi5.system.pub
@@ -56,16 +71,6 @@ in
   "hosts/baksrvr/jan.pw.age".publicKeys = [
     systems.lap.jan.pub
     systems.baksrvr.system.pub
-  ];
-
-  "silverbullet.env.age".publicKeys = [
-    systems.lap.jan.pub
-    systems.rpi5.system.pub
-  ];
-
-  "paperless.env.age".publicKeys = [
-    systems.lap.jan.pub
-    systems.rpi5.system.pub
   ];
 
   "esphome/power-strip-secrets.yaml.age".publicKeys = [
