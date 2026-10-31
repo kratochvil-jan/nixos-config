@@ -246,7 +246,7 @@ in
     enable = true;
     listenPort = services.silverbullet.port;
     spaceDir = services.silverbullet.storage;
-    extraArgs = [ "-L0.0.0.0" ];
+    listenAddress = "0.0.0.0";
     envFile = config.age.secrets.silverbullet-env.path;
   };
 
@@ -535,7 +535,7 @@ in
   services.prometheus = {
     enable = true;
     port = services.prometheus.port;
-    stateDir = services.prometheus.storage;
+    stateDir = (stripDir services.prometheus.storage);
     exporters.node = {
       enable = true;
       enabledCollectors = [

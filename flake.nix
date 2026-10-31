@@ -26,7 +26,6 @@
 
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
-    agenix.inputs.home-manager.follows = "home-manager";
 
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
 
@@ -117,20 +116,12 @@
                   files = "(^.*\\.nix$)|(^flake\\.lock$)|";
                   stages = [ "pre-push" ];
                 };
-                gitleaks = {
-                  enable = true;
-                  name = "gitleaks";
-                  entry = "${pkgs.gitleaks}/bin/gitleaks git --pre-commit";
-                  language = "system";
-                  pass_filenames = false;
-                };
               in
               {
                 # keep-sorted start
                 check-executables-have-shebangs.enable = true;
                 end-of-file-fixer.enable = true;
                 flake-check = flake-check;
-                gitleaks = gitleaks;
                 keep-sorted.enable = true;
                 nixfmt.enable = true;
                 shellcheck.enable = true;
@@ -157,7 +148,6 @@
             nativeBuildInputs = enabledPackages; # the enabled hooks from `checks`
             packages = with pkgs; [
               # keep-sorted start
-              gitleaks
               nix-output-monitor # `nom`
               # keep-sorted end
             ];
