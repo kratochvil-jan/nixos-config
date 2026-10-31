@@ -21,7 +21,8 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    disko.url = "github:nix-community/disko";
+    # disko.url = "github:nix-community/disko";
+    disko.url = "github:kratochvil-jan/disko/afa62cb7aa32a21577b4edaa8f77777a8ca10667"; # until this merges into disko upstream
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     agenix.url = "github:ryantm/agenix";

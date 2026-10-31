@@ -102,15 +102,15 @@ inputs.disko.lib.testLib.makeDiskoTest {
 
     # first some debug prints
     check("findmnt -t btrfs")
-    check("btrfs subvolume list /mnt/raid/data")
+    check("btrfs subvolume list /storage/raid/data")
     check("lsblk")
 
     # check if the @data subvolume exists and is mounted
-    check("btrfs subvolume list /mnt/raid/data | grep -q '@data'")
-    check("findmnt -t btrfs | grep -q /mnt/raid/data")
+    check("btrfs subvolume list /storage/raid/data | grep -q '@data'")
+    check("findmnt -t btrfs | grep -q /storage/raid/data")
 
     check("btrfs filesystem show /dev/disk/by-label/raid")
-    check("btrfs filesystem usage /mnt/raid/data")
+    check("btrfs filesystem usage /storage/raid/data")
 
     # make sure the raid has expected count of disks
     output = machine.succeed(
@@ -119,14 +119,14 @@ inputs.disko.lib.testLib.makeDiskoTest {
     assert output.count("devid") == ${builtins.toString (builtins.length disks)}, output
 
     # expected RAID type
-    check("btrfs filesystem df /mnt/raid/data")
+    check("btrfs filesystem df /storage/raid/data")
     check(
-        "btrfs filesystem df /mnt/raid/data | "
+        "btrfs filesystem df /storage/raid/data | "
         "grep -q 'Data, RAID1'"
     )
 
     check(
-        "btrfs filesystem df /mnt/raid/data | "
+        "btrfs filesystem df /storage/raid/data | "
         "grep -q 'Metadata, RAID1'"
     )
   '';
