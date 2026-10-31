@@ -75,7 +75,6 @@ in
 
     # Enable "Silent boot"
     consoleLogLevel = 3;
-    initrd.verbose = false;
     kernelParams = [
       "amdgpu"
       "video=1920x1200"
@@ -89,6 +88,7 @@ in
     loader.timeout = 0;
   };
   boot.zfs.forceImportRoot = false;
+  boot.supportedFilesystems.zfs = lib.mkForce false;
 
   # Firmware
 
