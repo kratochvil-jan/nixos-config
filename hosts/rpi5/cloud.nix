@@ -550,6 +550,7 @@ in
           {
             targets = [
               "localhost:${toString config.services.prometheus.exporters.node.port}"
+              "10.0.10.3:9100" # lap
             ];
           }
         ];

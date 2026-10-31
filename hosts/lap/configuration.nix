@@ -55,6 +55,18 @@ in
   hardware.amdgpu.opencl.enable = true;
   hardware.amdgpu.zluda.enable = true;
 
+  services.prometheus = {
+    enable = true;
+    exporters.node = {
+      enable = true;
+      openFirewall = true;
+      enabledCollectors = [
+        "systemd"
+        "processes"
+      ];
+    };
+  };
+
   nix.distributedBuilds = true;
   nix.buildMachines = [
     (import ../rpi3/build-machine.nix)
